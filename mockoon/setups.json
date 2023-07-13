@@ -1,0 +1,90 @@
+{
+  "uuid": "d90085ea-daf3-4cb2-af9d-2230cc1481e7",
+  "lastMigration": 27,
+  "name": "Setups",
+  "endpointPrefix": "",
+  "latency": 0,
+  "port": 3002,
+  "hostname": "",
+  "folders": [],
+  "routes": [
+    {
+      "uuid": "27e81f14-4af4-4e74-8dc8-20eb9e80b8c4",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "api/setups",
+      "responses": [
+        {
+          "uuid": "4dd7d17a-fe9e-49d1-a323-f2299527c0b0",
+          "body": "{\n  \"data\": {\n    \"setups\": [\n      {\n        \"id\": 0,\n        \"iniFile\": \"ks_porsche_911_gt1/monza/mso soft tires (Matic Sebjan Ogrizek).ini\",\n        \"name\": \"Base setup\",\n        \"diffs\": [\n          {\n            \"category\": \"AERO\",\n            \"values\": [\n              {\n                \"name\": \"[WING_2]\",\n                \"value\": \"VALUE=4\",\n                \"difference\": \"base\"\n              }\n            ]\n          },\n          {\n            \"category\": \"ALIGNMENT\",\n            \"values\": [\n              {\n                \"name\": \"[TOE_OUT_LF]\",\n                \"value\": \"VALUE=3\",\n                \"difference\": \"base\"\n              },\n              {\n                \"name\": \"[TOE_OUT_RF]\",\n                \"value\": \"VALUE=3\",\n                \"difference\": \"base\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"id\": 1,\n        \"iniFile\": \"ks_porsche_911_gt1/monza/mso soft tires (Matic Sebjan Ogrizek)- aero.ini\",\n        \"name\": \"Compare setupppp #1\",\n        \"diffs\": [\n          {\n            \"category\": \"AERO\",\n            \"values\": [\n              {\n                \"name\": \"[WING_2]\",\n                \"value\": \"VALUE=3\",\n                \"difference\": \"background-lower\"\n              }\n            ]\n          },\n          {\n            \"category\": \"ALIGNMENT\",\n            \"values\": [\n              {\n                \"name\": \"[TOE_OUT_LF]\",\n                \"value\": \"VALUE=4\",\n                \"difference\": \"background-higher\"\n              },\n              {\n                \"name\": \"[TOE_OUT_RF]\",\n                \"value\": \"VALUE=4\",\n                \"difference\": \"background-higher\"\n              }\n            ]\n          }\n        ]\n      }\n    ]\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
+    }
+  ],
+  "rootChildren": [
+    {
+      "type": "route",
+      "uuid": "27e81f14-4af4-4e74-8dc8-20eb9e80b8c4"
+    }
+  ],
+  "proxyMode": false,
+  "proxyHost": "",
+  "proxyRemovePrefix": false,
+  "tlsOptions": {
+    "enabled": false,
+    "type": "CERT",
+    "pfxPath": "",
+    "certPath": "",
+    "keyPath": "",
+    "caPath": "",
+    "passphrase": ""
+  },
+  "cors": true,
+  "headers": [
+    {
+      "key": "Content-Type",
+      "value": "application/json"
+    },
+    {
+      "key": "Access-Control-Allow-Origin",
+      "value": "*"
+    },
+    {
+      "key": "Access-Control-Allow-Methods",
+      "value": "GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"
+    },
+    {
+      "key": "Access-Control-Allow-Headers",
+      "value": "Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"
+    }
+  ],
+  "proxyReqHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "proxyResHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "data": []
+}

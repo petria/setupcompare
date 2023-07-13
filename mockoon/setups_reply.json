@@ -1,0 +1,74 @@
+{
+
+  "data": {
+    "base_name": "ks_porsche_911_gt1/monza/mso soft tires (Matic Sebjan Ogrizek).ini",
+    "compare_name": ["ks_porsche_911_gt1/monza/mso soft tires (Matic Sebjan Ogrizek)- aero.ini"],
+    "setups": [
+      {
+        "id": 0,
+        "iniFile": "ks_porsche_911_gt1/monza/mso soft tires (Matic Sebjan Ogrizek).ini",
+        "name": "Base setup",
+        "diffs": [
+          {
+            "category": "AERO",
+            "values": [
+              {
+                "name": "[WING_2]",
+                "value": "VALUE=4",
+                "difference": "base"
+              }
+            ]
+          },
+          {
+            "category": "ALIGNMENT",
+            "values": [
+              {
+                "name": "[TOE_OUT_LF]",
+                "value": "VALUE=3",
+                "difference": "base"
+              },
+              {
+                "name": "[TOE_OUT_RF]",
+                "value": "VALUE=3",
+                "difference": "base"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "iniFile": "ks_porsche_911_gt1/monza/mso soft tires (Matic Sebjan Ogrizek)- aero.ini",
+        "name": "Compare setupppp #1",
+        "diffs": [
+          {
+            "category": "AERO",
+            "values": [
+              {
+                "name": "[WING_2]",
+                "value": "VALUE=3",
+                "difference": "background-lower"
+              }
+            ]
+          },
+          {
+            "category": "ALIGNMENT",
+            "values": [
+              {
+                "name": "[TOE_OUT_LF]",
+                "value": "VALUE=4",
+                "difference": "background-higher"
+              },
+              {
+                "name": "[TOE_OUT_RF]",
+                "value": "VALUE=4",
+                "difference": "background-higher"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+
+}
