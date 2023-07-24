@@ -1,6 +1,8 @@
 package com.koodipalvelu.airiot.fi.setupcompare.service;
 
 import com.koodipalvelu.airiot.fi.setupcompare.compare.SetupIniComparator;
+import com.koodipalvelu.airiot.fi.setupcompare.model.scan.Car;
+import com.koodipalvelu.airiot.fi.setupcompare.model.scan.Track;
 import com.koodipalvelu.airiot.fi.setupcompare.reader.SetupFilesReader;
 import com.koodipalvelu.airiot.fi.setupcompare.reader.SetupScanResults;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +16,7 @@ import java.util.*;
 @Slf4j
 public class SetupsService {
 
-    private static final String AC_SETUP_LOCAL_BASE_DIR = "/Users/petria/code/github/setupcompare/ACsetups/setups";
+    private static final String AC_SETUP_LOCAL_BASE_DIR = "/Users/petria/code/github/setupcompare/ACsetups/setups_oscar";
     private static final String AC_CONFIG_KEYS_MAP_FILE = "/Users/petria/code/github/setupcompare/ACsetups/config_keys_mapping.ini";
 
 
@@ -23,29 +25,42 @@ public class SetupsService {
     private Map<String, String> configKeyMapping;
     private Map<String, SetupScanResults> resultsMap = new HashMap<>();
 
+    private Map<String, Car> setupsMap = new HashMap<>();
+
     public SetupsService(SetupFilesReader reader) throws IOException {
         this.reader = reader;
-        readIniFiles();
+//        readIniFiles();
     }
 
 
-    private void readIniFiles() throws IOException {
+    public void readIniFiles() throws IOException {
         long start = System.currentTimeMillis();
         configKeyMapping = reader.readConfigKeysMappingIniFile(AC_CONFIG_KEYS_MAP_FILE);
 
         String scanDir = AC_SETUP_LOCAL_BASE_DIR;
         log.debug("Scan dir   : {}", scanDir);
 
-        List<File> dirNames = reader.scanForFolders(scanDir);
+        List<File> carDirFiles = reader.scanForFolders(scanDir);
 //        Assertions.assertNotNull(dirNames);
 
         Set<String> carDirNames = new HashSet<>();
         Set<String> trackDirNames = new HashSet<>();
-        Set<String> uniqueSetupFiles = new HashSet<>();
+        int uniqueSetupFiles = 0;
 
-        for (File carFile : dirNames) {
-            List<File> files = reader.scanForFolders(carFile.getAbsolutePath());
-            for (File file : files) {
+        for (File carFile : carDirFiles) {
+            String carFileName = carFile.getName();
+
+            Car carModel = this.setupsMap.get(carFileName);
+            if (carModel == null) {
+                carModel = new Car();
+                carModel.setCarName(carFileName);
+                carModel.setCarFolderName(carFileName);
+                this.setupsMap.put(carFileName, carModel);
+            }
+
+
+            List<File> trackFiles = reader.scanForFolders(carFile.getAbsolutePath());
+            for (File file : trackFiles) {
                 String path = file.getAbsolutePath();
                 String[] split = path.split("/");
 
@@ -56,17 +71,27 @@ public class SetupsService {
                 trackDirNames.add(track);
                 String key = String.format("%s__%s", car, track);
 
-                List<File> iniFiles = reader.scanForIniFiles(path);
+                String[] iniFiles = reader.scanForIniFiles(path);
                 SetupScanResults results
                         = SetupScanResults.builder()
                         .carFolder(car)
                         .trackFolder(track)
                         .iniFilePath(new ArrayList<>())
                         .build();
-                for (File iniFile : iniFiles) {
-                    results.getIniFilePath().add(iniFile.getAbsolutePath());
-                    uniqueSetupFiles.add(iniFile.getAbsolutePath());
+
+                for (String iniFile : iniFiles) {
+                    uniqueSetupFiles++;
+                    Track trackModel = carModel.getTracksWithSetup().get(track);
+                    if (trackModel == null) {
+                        trackModel = new Track();
+                        trackModel.setTrackFolderName(track);
+                        trackModel.setTrackName(track);
+                        carModel.getTracksWithSetup().put(track, trackModel);
+                    }
+                    trackModel.getIniFilesMap().put(iniFile, iniFile);
                 }
+
+
 /*                if (results.getIniFilePath().size() > 2) {
                     log.debug("{} - {}", results.getIniFilePath().size(), key);
                 }*/
@@ -87,7 +112,7 @@ public class SetupsService {
             System.out.printf("%s\n", uniqueKey);
         }*/
 
-        log.debug("Setup INIs : {}", uniqueSetupFiles.size());
+        log.debug("Setup INIs : {}", uniqueSetupFiles);
         log.debug("Car dirs   : {}", carDirNames.size());
         log.debug("Track dirs : {}", trackDirNames.size());
         log.debug("Scan time  : {} ms", System.currentTimeMillis() - start);
@@ -121,4 +146,15 @@ public class SetupsService {
     public Map<String, SetupScanResults> getResultsMap() {
         return resultsMap;
     }
+
+    public Map<String, Car> getSetupsMap() {
+        return setupsMap;
+    }
+
+    public List<Car> getCarList() {
+        List<Car> carList = new ArrayList<>(this.setupsMap.values());
+        carList.sort(Comparator.comparing(Car::getCarName));
+        return carList;
+    }
+
 }

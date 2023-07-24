@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class SetupFilesReader {
 
     @Getter
-    private  Map<String, String> keyToConfigGroup = new HashMap<>();
+    private Map<String, String> keyToConfigGroup = new HashMap<>();
 
     public List<String> readSetupFile(String fileName) throws IOException {
         return Files.readAllLines(Path.of(fileName));
@@ -31,13 +31,10 @@ public class SetupFilesReader {
         return dirs;
     }
 
-    public List<File> scanForIniFiles(String baseDir) throws IOException {
-        List<File> dirs = Files.list(Path.of(baseDir))
-                .map(Path::toFile)
-                .filter(File::isFile)
-                .filter(f -> f.getName().endsWith(".ini"))
-                .collect(Collectors.toList());
-        return dirs;
+    public String[] scanForIniFiles(String baseDir) throws IOException {
+                File f = new File(baseDir);
+        String[] list = f.list((dir, name) -> name.endsWith(".ini"));
+        return list;
     }
 
     public Map<String, String> parseValues(List<String> lines) {
@@ -52,7 +49,7 @@ public class SetupFilesReader {
             if (line.contains("[")) {
                 valueName = line;
             }
-            if (valueName !=  null && value != null) {
+            if (valueName != null && value != null) {
                 values.put(valueName, value);
                 valueName = null;
                 value = null;
