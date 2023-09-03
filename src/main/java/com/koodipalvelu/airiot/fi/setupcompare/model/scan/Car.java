@@ -10,6 +10,7 @@ import java.util.Map;
 @NoArgsConstructor
 public class Car {
 
+    private long id;
     private String carName;
     private String carFolderName;
     private Map<String, Track> tracksWithSetup = new HashMap<>();

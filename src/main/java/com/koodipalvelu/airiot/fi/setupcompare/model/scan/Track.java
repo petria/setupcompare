@@ -10,6 +10,8 @@ import java.util.Map;
 @NoArgsConstructor
 public class Track {
 
+    private long id;
+
     private String trackName;
 
     private String trackFolderName;

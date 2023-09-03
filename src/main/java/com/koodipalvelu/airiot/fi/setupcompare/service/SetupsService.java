@@ -1,16 +1,18 @@
 package com.koodipalvelu.airiot.fi.setupcompare.service;
 
 import com.koodipalvelu.airiot.fi.setupcompare.compare.SetupIniComparator;
+import com.koodipalvelu.airiot.fi.setupcompare.model.carselector.CarForSelection;
 import com.koodipalvelu.airiot.fi.setupcompare.model.scan.Car;
+import com.koodipalvelu.airiot.fi.setupcompare.model.scan.SetupScanResults;
 import com.koodipalvelu.airiot.fi.setupcompare.model.scan.Track;
 import com.koodipalvelu.airiot.fi.setupcompare.reader.SetupFilesReader;
-import com.koodipalvelu.airiot.fi.setupcompare.reader.SetupScanResults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -27,6 +29,11 @@ public class SetupsService {
 
     private Map<String, Car> setupsMap = new HashMap<>();
 
+    private long carIdCounter = 0;
+    private long trackIdCounter = 0;
+
+    private long iniIdCounter = 0;
+
     public SetupsService(SetupFilesReader reader) throws IOException {
         this.reader = reader;
 //        readIniFiles();
@@ -35,6 +42,11 @@ public class SetupsService {
 
     public void readIniFiles() throws IOException {
         long start = System.currentTimeMillis();
+
+        this.carIdCounter = 0;
+        this.trackIdCounter = 0;
+        this.iniIdCounter = 0;
+
         configKeyMapping = reader.readConfigKeysMappingIniFile(AC_CONFIG_KEYS_MAP_FILE);
 
         String scanDir = AC_SETUP_LOCAL_BASE_DIR;
@@ -52,7 +64,9 @@ public class SetupsService {
 
             Car carModel = this.setupsMap.get(carFileName);
             if (carModel == null) {
+                this.carIdCounter++;
                 carModel = new Car();
+                carModel.setId(carIdCounter);
                 carModel.setCarName(carFileName);
                 carModel.setCarFolderName(carFileName);
                 this.setupsMap.put(carFileName, carModel);
@@ -83,7 +97,9 @@ public class SetupsService {
                     uniqueSetupFiles++;
                     Track trackModel = carModel.getTracksWithSetup().get(track);
                     if (trackModel == null) {
+                        this.trackIdCounter++;
                         trackModel = new Track();
+                        trackModel.setId(this.trackIdCounter);
                         trackModel.setTrackFolderName(track);
                         trackModel.setTrackName(track);
                         carModel.getTracksWithSetup().put(track, trackModel);
@@ -157,4 +173,20 @@ public class SetupsService {
         return carList;
     }
 
+    public List<CarForSelection> getCarListForSelection() {
+
+        List<Car> carList = getCarList();
+        List<CarForSelection> collect = carList.stream().map(this::convertToCarForSelection).collect(Collectors.toList());
+
+        return collect;
+    }
+
+    private CarForSelection convertToCarForSelection(Car car) {
+        CarForSelection forSelection
+                = CarForSelection.builder()
+                .value(car.getId() + "")
+                .label((car.getCarName()))
+                .build();
+        return forSelection;
+    }
 }

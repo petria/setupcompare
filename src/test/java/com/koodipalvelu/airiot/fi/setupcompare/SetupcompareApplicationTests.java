@@ -1,9 +1,7 @@
 package com.koodipalvelu.airiot.fi.setupcompare;
 
-import com.koodipalvelu.airiot.fi.setupcompare.compare.SetupIniComparator;
 import com.koodipalvelu.airiot.fi.setupcompare.model.scan.Car;
 import com.koodipalvelu.airiot.fi.setupcompare.reader.SetupFilesReader;
-import com.koodipalvelu.airiot.fi.setupcompare.reader.SetupScanResults;
 import com.koodipalvelu.airiot.fi.setupcompare.service.SetupsService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -11,9 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 @SpringBootTest
 @Slf4j

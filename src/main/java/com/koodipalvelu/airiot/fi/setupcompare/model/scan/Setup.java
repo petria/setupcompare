@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Setup {
 
+    private long id;
 
     private String setupKey;
 

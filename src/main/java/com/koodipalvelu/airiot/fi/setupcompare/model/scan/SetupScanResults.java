@@ -1,4 +1,4 @@
-package com.koodipalvelu.airiot.fi.setupcompare.reader;
+package com.koodipalvelu.airiot.fi.setupcompare.model.scan;
 
 
 import lombok.Builder;
