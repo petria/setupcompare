@@ -1,12 +1,10 @@
 package com.koodipalvelu.airiot.fi.setupcompare.rest;
 
+import com.koodipalvelu.airiot.fi.setupcompare.model.carselector.TrackListForCarRequest;
 import com.koodipalvelu.airiot.fi.setupcompare.model.diff.Data;
 import com.koodipalvelu.airiot.fi.setupcompare.service.SetupsService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -39,6 +37,14 @@ public class SetupController {
     public ResponseEntity<?> getCarListForSelection() {
         return ResponseEntity.ok(service.getCarListForSelection());
     }
+
+
+    @CrossOrigin(origins = "*")
+    @PostMapping("/track-list-for-car")
+    public ResponseEntity<?> getTrackListForCar(@RequestBody TrackListForCarRequest request) {
+        return ResponseEntity.ok(service.getTrackListForCar(request.getCarFolderName()));
+    }
+
 
     private Data getData() {
         Data data = new Data();

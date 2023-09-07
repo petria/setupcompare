@@ -1,16 +1,17 @@
 package com.koodipalvelu.airiot.fi.setupcompare.model.carselector;
 
+
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Builder
 @Data
-public class CarForSelection {
+@AllArgsConstructor
+@NoArgsConstructor
+public class TrackListForCarRequest {
 
-    private long id;
-    private long carIniFileCount;
-    private String carName;
     private String carFolderName;
-
 
 }

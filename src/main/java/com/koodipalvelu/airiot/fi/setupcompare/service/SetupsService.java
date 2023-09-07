@@ -2,6 +2,8 @@ package com.koodipalvelu.airiot.fi.setupcompare.service;
 
 import com.koodipalvelu.airiot.fi.setupcompare.compare.SetupIniComparator;
 import com.koodipalvelu.airiot.fi.setupcompare.model.carselector.CarForSelection;
+import com.koodipalvelu.airiot.fi.setupcompare.model.carselector.TrackForCarSelection;
+import com.koodipalvelu.airiot.fi.setupcompare.model.carselector.TrackListForCarResponse;
 import com.koodipalvelu.airiot.fi.setupcompare.model.scan.Car;
 import com.koodipalvelu.airiot.fi.setupcompare.model.scan.SetupScanResults;
 import com.koodipalvelu.airiot.fi.setupcompare.model.scan.Track;
@@ -13,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Slf4j
@@ -92,6 +95,7 @@ public class SetupsService {
                         .trackFolder(track)
                         .iniFilePath(new ArrayList<>())
                         .build();
+                carModel.setIniFileCount(iniFiles.length);
 
                 for (String iniFile : iniFiles) {
                     uniqueSetupFiles++;
@@ -175,7 +179,8 @@ public class SetupsService {
 
     public List<CarForSelection> getCarListForSelection() {
 
-        List<Car> carList = getCarList();
+        List<Car> carList = getCarList().stream().filter(car -> car.getIniFileCount() > 0).toList();
+//        carList.stream().filter(car -> )
         List<CarForSelection> collect = carList.stream().map(this::convertToCarForSelection).collect(Collectors.toList());
 
         return collect;
@@ -184,9 +189,40 @@ public class SetupsService {
     private CarForSelection convertToCarForSelection(Car car) {
         CarForSelection forSelection
                 = CarForSelection.builder()
-                .value(car.getId() + "")
-                .label((car.getCarName()))
+                .id(car.getId())
+                .carIniFileCount(car.getIniFileCount())
+                .carFolderName(car.getCarFolderName())
+                .carName(car.getCarName())
                 .build();
         return forSelection;
+    }
+
+    public TrackListForCarResponse getTrackListForCar(String carFolderName) {
+        TrackListForCarResponse response
+                = TrackListForCarResponse.builder()
+                .trackList(getTrackByFolderName(carFolderName))
+                .build();
+
+        return response;
+    }
+
+    private List<TrackForCarSelection> getTrackByFolderName(String carFolderName) {
+        Car car = this.setupsMap.get(carFolderName);
+        List<TrackForCarSelection> list = new ArrayList<>();
+        if (car != null) {
+            Stream<String> sorted = car.getTracksWithSetup().keySet().stream().sorted();
+            for (String trackName : sorted.toList()) {
+                Track track = car.getTracksWithSetup().get(trackName);
+                TrackForCarSelection forCarSelection
+                        = TrackForCarSelection.builder()
+                        .id(track.getId())
+                        .trackFolderName(track.getTrackFolderName())
+                        .trackName(track.getTrackName())
+                        .build();
+                list.add(forCarSelection);
+            }
+        }
+
+        return list;
     }
 }
