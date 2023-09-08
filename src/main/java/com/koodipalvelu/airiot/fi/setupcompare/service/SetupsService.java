@@ -83,7 +83,10 @@ public class SetupsService {
 
                 String car = split[split.length - 2];
                 String track = split[split.length - 1];
-
+                if (track.equals("generic")) {
+                    // skip generic dir
+                    continue;
+                }
                 carDirNames.add(car);
                 trackDirNames.add(track);
                 String key = String.format("%s__%s", car, track);
