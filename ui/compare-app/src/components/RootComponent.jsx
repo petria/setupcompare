@@ -5,15 +5,16 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import {Button} from "react-bootstrap";
 import CarSelector from "./CarSelector";
-import {NotificationContainer, NotificationManager} from "react-notifications";
+
 import SetupDataFetcher from "../service/SetupDataFetcher";
+import EventBus from "../common/EventBus";
 
 const RootComponent = () => {
 
-    const createNotification = (message, title = 'foo') => {
-        NotificationManager.warning(message, title);
-    }
-
+    /*    const createNotification = (message, title = 'foo') => {
+            NotificationManager.warning(message, title);
+        }
+    */
     const [carList, setCarList] = useState(null);
 
     useEffect(() => {
@@ -26,7 +27,7 @@ const RootComponent = () => {
             },
             (err) => {
                 console.log("Network error: ", err);
-                createNotification(err.message, "Back End access")
+                EventBus.dispatch("notify_test", {type: "ERROR", message: err.message, title: "Back End access"});
                 setCarList(null);
             }
         );
@@ -76,20 +77,20 @@ const RootComponent = () => {
 
     const handleReloadButton = (e) => {
         console.log('handle reload ->', e);
-        createNotification('Sending reload request!');
+        EventBus.dispatch("notify_test", {type: "ERROR", message: "Sending reload request!", title: "fyi"});
+
+//        createNotification('Sending reload request!');
     }
 
     return (
         <Container className='RootComponent-Container'>
-            <NotificationContainer/>
 
             <Row className='RootComponent-Reload-Row'>
                 <Col><Button onClick={handleReloadButton} variant="danger">Re-scan configs</Button></Col>
             </Row>
 
 
-            <CarSelector carList={carList} carSelectCb={carSelectCb}
-                         createNotification={createNotification}></CarSelector>
+            <CarSelector carList={carList} carSelectCb={carSelectCb}></CarSelector>
 
             <Row>
                 <Col><Button onClick={(e) => handleButtonMinus(e)}

@@ -6,6 +6,7 @@ import DropdownItem from "react-bootstrap/DropdownItem";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import SetupDataFetcher from "../service/SetupDataFetcher";
+import EventBus from "../common/EventBus";
 
 const CarSelector = (props) => {
 
@@ -22,6 +23,9 @@ const CarSelector = (props) => {
         };
 
         const carSelected = (eventKey, event) => {
+
+            EventBus.dispatch("notify_test", {type: "WARNING", message: "message", title: "titteli"});
+
             console.log("event", event);
             console.log("eventKey", eventKey);
             setSelectedCar(eventKey);
@@ -42,7 +46,7 @@ const CarSelector = (props) => {
             console.log("event", event);
             console.log("eventKey", eventKey);
             setSelectedTrack(eventKey);
-            props.createNotification("jei");
+//            props.createNotification("jei");
         }
 
         return (
