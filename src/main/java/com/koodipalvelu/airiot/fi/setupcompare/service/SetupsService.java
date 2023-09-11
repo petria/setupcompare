@@ -56,7 +56,6 @@ public class SetupsService {
         log.debug("Scan dir   : {}", scanDir);
 
         List<File> carDirFiles = reader.scanForFolders(scanDir);
-//        Assertions.assertNotNull(dirNames);
 
         Set<String> carDirNames = new HashSet<>();
         Set<String> trackDirNames = new HashSet<>();
@@ -115,25 +114,12 @@ public class SetupsService {
                 }
 
 
-/*                if (results.getIniFilePath().size() > 2) {
-                    log.debug("{} - {}", results.getIniFilePath().size(), key);
-                }*/
                 resultsMap.put(key, results);
 
             }
 
         }
 
-//
-/*        Set<String> uniqueConfigKeys = new TreeSet<>();
-        for (String iniFilePath : uniqueSetupFiles) {
-            List<String> lines = reader.readSetupFile(iniFilePath);
-            Map<String, String> parsed = reader.parseValues(lines);
-            uniqueConfigKeys.addAll(parsed.keySet());
-        }*/
-/*        for (String uniqueKey : uniqueConfigKeys) {
-            System.out.printf("%s\n", uniqueKey);
-        }*/
 
         log.debug("Setup INIs : {}", uniqueSetupFiles);
         log.debug("Car dirs   : {}", carDirNames.size());
