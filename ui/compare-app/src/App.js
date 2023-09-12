@@ -11,15 +11,21 @@ const App = () => {
     useEffect(() => {
 
         EventBus.on("notify_test", (data) => {
-            console.log('data', data);
-            if (data.type === 'INFO') {
-                NotificationManager.info(data.message, data.title);
-            } else if (data.type === 'WARNING') {
-                NotificationManager.warning(data.message, data.title);
-            } else if (data.type === 'ERROR') {
+
+            if (data.type === 'ERROR') {
+
                 NotificationManager.error(data.message, data.title);
+
+            } else if (data.type === 'WARNING') {
+
+                NotificationManager.warning(data.message, data.title);
+
+            } else {
+
+                NotificationManager.info(data.message, data.title);
+
             }
-//            NotificationManager.warning("message", "title");
+
         });
 
         return () => {

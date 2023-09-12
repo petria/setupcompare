@@ -11,26 +11,40 @@ import EventBus from "../common/EventBus";
 
 const RootComponent = () => {
 
-    /*    const createNotification = (message, title = 'foo') => {
-            NotificationManager.warning(message, title);
-        }
-    */
+
     const [carList, setCarList] = useState(null);
 
     useEffect(() => {
         console.log("use effect!")
 
-        SetupDataFetcher.getCarListForSelection(
-            (response) => {
-                console.log('response', response);
-                setCarList(response.data);
-            },
-            (err) => {
-                console.log("Network error: ", err);
-                EventBus.dispatch("notify_test", {type: "ERROR", message: err.message, title: "Back End access"});
-                setCarList(null);
-            }
-        );
+        EventBus.on("reload_cars", (data) => {
+
+            console.log('Reloading cars from backend!');
+
+            SetupDataFetcher.getCarListForSelection(
+                (response) => {
+                    console.log('response', response);
+                    EventBus.dispatch("notify_test", {
+                        type: "INFO",
+                        message: "Loaded " + response.data.length + " cars!",
+                        title: "Info"
+                    });
+                    setCarList(response.data);
+                },
+                (err) => {
+                    console.log("Network error: ", err);
+                    EventBus.dispatch("notify_test", {type: "ERROR", message: err.message, title: "Back End access"});
+                    setCarList(null);
+                }
+            );
+
+        });
+
+        EventBus.dispatch("reload_cars")
+
+        return () => {
+            EventBus.remove("reload_cars");
+        };
 
     }, []);
 
@@ -77,7 +91,8 @@ const RootComponent = () => {
 
     const handleReloadButton = (e) => {
         console.log('handle reload ->', e);
-        EventBus.dispatch("notify_test", {type: "ERROR", message: "Sending reload request!", title: "fyi"});
+        EventBus.dispatch("reload_cars");
+//        EventBus.dispatch("notify_test", {type: "ERROR", message: "Sending reload request!", title: "fyi"});
 
 //        createNotification('Sending reload request!');
     }
