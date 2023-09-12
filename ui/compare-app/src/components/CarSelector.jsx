@@ -6,13 +6,13 @@ import DropdownItem from "react-bootstrap/DropdownItem";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import SetupDataFetcher from "../service/SetupDataFetcher";
-import EventBus from "../common/EventBus";
 
 const CarSelector = (props) => {
 
     const [selectedCar, setSelectedCar] = useState("-");
     const [selectedTrack, setSelectedTrack] = useState("-");
     const [trackList, setTrackList] = useState([]);
+    const [iniList, setIniList] = useState([]);
 
     const RowTest = (props) => {
         const buttonPressed = (e) => {
@@ -24,17 +24,13 @@ const CarSelector = (props) => {
 
         const carSelected = (eventKey, event) => {
 
-            EventBus.dispatch("notify_test", {type: "WARNING", message: "message", title: "titteli"});
-
-            console.log("event", event);
-            console.log("eventKey", eventKey);
             setSelectedCar(eventKey);
             SetupDataFetcher.getTrackListForCar(
                 eventKey,
                 (response) => {
                     console.log('response', response);
                     setTrackList(response.data.trackList);
-
+                    setSelectedTrack('-');
                 },
                 (error) => {
                     console.log('error', error); // TODO
@@ -43,10 +39,7 @@ const CarSelector = (props) => {
         }
 
         const trackSelected = (eventKey, event) => {
-            console.log("event", event);
-            console.log("eventKey", eventKey);
             setSelectedTrack(eventKey);
-//            props.createNotification("jei");
         }
 
         return (
@@ -70,24 +63,47 @@ const CarSelector = (props) => {
                 </Col>
                 <Col>{selectedCar}</Col>
                 <Col>
-                    <Dropdown onSelect={trackSelected}>
-                        <Dropdown.Toggle variant="success" id="dropdown-basic">
-                            Select Track
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu>
-                            {
-                                trackList.map(
-                                    (track) => (
-                                        <DropdownItem
-                                            eventKey={track.trackFolderName}>{track.trackFolderName}</DropdownItem>
-                                    )
-                                )
-                            }
-                        </Dropdown.Menu>
-                    </Dropdown>
+                    {
+                        selectedCar !== '-'
+                            ?
+                            <div>
+                                <Dropdown onSelect={trackSelected}>
+                                    <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                        Select Track
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu>
+                                        {
+                                            trackList.map(
+                                                (track) => (
+                                                    <DropdownItem
+                                                        eventKey={track.trackFolderName}>{track.trackFolderName}</DropdownItem>
+                                                )
+                                            )
+                                        }
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            </div>
+                            :
+                            <div>
+                                <Button variant="danger">Select car first</Button>
+                            </div>
+                    }
                 </Col>
                 <Col>{selectedTrack}</Col>
-                <Col><Button onClick={buttonPressed}>Select setup.ini</Button></Col>
+                <Col>
+                    {selectedTrack === '-'
+                        ?
+                        <div>
+                            <Button variant="danger">Select car&track first</Button>
+                        </div>
+                        :
+                        <div>
+                            select
+                        </div>
+                    }
+
+
+                </Col>
             </Row>
 
         )
