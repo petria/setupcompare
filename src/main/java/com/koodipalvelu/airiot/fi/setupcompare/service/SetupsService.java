@@ -5,9 +5,11 @@ import com.koodipalvelu.airiot.fi.setupcompare.model.carselector.CarForSelection
 import com.koodipalvelu.airiot.fi.setupcompare.model.carselector.TrackForCarSelection;
 import com.koodipalvelu.airiot.fi.setupcompare.model.carselector.TrackListForCarResponse;
 import com.koodipalvelu.airiot.fi.setupcompare.model.scan.Car;
+import com.koodipalvelu.airiot.fi.setupcompare.model.scan.SetupIniFileScanStats;
 import com.koodipalvelu.airiot.fi.setupcompare.model.scan.SetupScanResults;
 import com.koodipalvelu.airiot.fi.setupcompare.model.scan.Track;
 import com.koodipalvelu.airiot.fi.setupcompare.reader.SetupFilesReader;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +19,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.koodipalvelu.airiot.fi.setupcompare.config.StaticConfig.AC_CONFIG_KEYS_MAP_FILE;
+import static com.koodipalvelu.airiot.fi.setupcompare.config.StaticConfig.AC_SETUP_LOCAL_BASE_DIR;
+
 @Service
 @Slf4j
 public class SetupsService {
-
-    private static final String AC_SETUP_LOCAL_BASE_DIR = "/Users/petria/code/github/setupcompare/ACsetups/setups_oscar";
-    private static final String AC_CONFIG_KEYS_MAP_FILE = "/Users/petria/code/github/setupcompare/ACsetups/config_keys_mapping.ini";
 
 
     private final SetupFilesReader reader;
@@ -39,11 +41,24 @@ public class SetupsService {
 
     public SetupsService(SetupFilesReader reader) throws IOException {
         this.reader = reader;
-//        readIniFiles();
+    }
+
+    @PostConstruct
+    public void doInitialScan() {
+        try {
+            SetupIniFileScanStats stats = scanForSetupIniFiles(AC_CONFIG_KEYS_MAP_FILE, AC_SETUP_LOCAL_BASE_DIR);
+            log.debug("Initial scan done: {}", stats);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
-    public void readIniFiles() throws IOException {
+    public synchronized SetupIniFileScanStats scanForSetupIniFiles(String configKeysMapFile, String setupLocalBaseDir) throws IOException {
+
+        SetupIniFileScanStats stats = new SetupIniFileScanStats();
+        stats.setConfigKeyMapFile(configKeysMapFile);
+
         long start = System.currentTimeMillis();
 
         this.carIdCounter = 0;
@@ -52,7 +67,9 @@ public class SetupsService {
 
         configKeyMapping = reader.readConfigKeysMappingIniFile(AC_CONFIG_KEYS_MAP_FILE);
 
-        String scanDir = AC_SETUP_LOCAL_BASE_DIR;
+        String scanDir = setupLocalBaseDir;
+        stats.setScanDir(scanDir);
+
         log.debug("Scan dir   : {}", scanDir);
 
         List<File> carDirFiles = reader.scanForFolders(scanDir);
@@ -119,14 +136,21 @@ public class SetupsService {
             }
 
         }
-
+        long scanTime = System.currentTimeMillis() - start;
 
         log.debug("Setup INIs : {}", uniqueSetupFiles);
         log.debug("Car dirs   : {}", carDirNames.size());
         log.debug("Track dirs : {}", trackDirNames.size());
-        log.debug("Scan time  : {} ms", System.currentTimeMillis() - start);
+        log.debug("Scan time  : {} ms", scanTime);
 
+        stats.setUniqueSetupFiles(uniqueSetupFiles);
+        stats.setCarDirs(carDirNames.size());
+        stats.setTrackDirs(trackDirNames.size());
+        stats.setScanTime(scanTime);
 
+        stats.setUniqueSetupFiles(uniqueSetupFiles);
+
+        return stats;
     }
 
 
@@ -169,9 +193,7 @@ public class SetupsService {
     public List<CarForSelection> getCarListForSelection() {
 
         List<Car> carList = getCarList().stream().filter(car -> car.getIniFileCount() > 0).toList();
-//        carList.stream().filter(car -> )
         List<CarForSelection> collect = carList.stream().map(this::convertToCarForSelection).collect(Collectors.toList());
-
         return collect;
     }
 

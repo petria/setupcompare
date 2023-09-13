@@ -1,12 +1,14 @@
 package com.koodipalvelu.airiot.fi.setupcompare.rest;
 
 import com.koodipalvelu.airiot.fi.setupcompare.model.carselector.TrackListForCarRequest;
-import com.koodipalvelu.airiot.fi.setupcompare.model.diff.Data;
 import com.koodipalvelu.airiot.fi.setupcompare.service.SetupsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+
+import static com.koodipalvelu.airiot.fi.setupcompare.config.StaticConfig.AC_CONFIG_KEYS_MAP_FILE;
+import static com.koodipalvelu.airiot.fi.setupcompare.config.StaticConfig.AC_SETUP_LOCAL_BASE_DIR;
 
 @RestController
 @RequestMapping("/api/setups")
@@ -18,7 +20,6 @@ public class SetupController {
     public SetupController(SetupsService service) throws IOException {
         super();
         this.service = service;
-        service.readIniFiles();
     }
 
     @GetMapping
@@ -45,10 +46,11 @@ public class SetupController {
         return ResponseEntity.ok(service.getTrackListForCar(request.getCarFolderName()));
     }
 
-
-    private Data getData() {
-        Data data = new Data();
-        return data;
+    @CrossOrigin(origins = "*")
+    @GetMapping("/scan-for-setup-ini-files")
+    public ResponseEntity<?> scanForSetupIniFiles() throws IOException {
+        return ResponseEntity.ok(service.scanForSetupIniFiles(AC_CONFIG_KEYS_MAP_FILE, AC_SETUP_LOCAL_BASE_DIR));
     }
+
 
 }

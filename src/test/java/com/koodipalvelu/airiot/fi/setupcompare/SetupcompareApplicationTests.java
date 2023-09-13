@@ -38,7 +38,7 @@ class SetupcompareApplicationTests {
 
     @Test
     public void test_setups_service_read_ini_files() throws IOException {
-        service.readIniFiles();
+        service.scanForSetupIniFiles(null, null);
         Map<String, Car> setupsMap = service.getSetupsMap();
 
         List<Car> carList = service.getCarList();
