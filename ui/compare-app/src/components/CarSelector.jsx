@@ -14,13 +14,7 @@ const CarSelector = (props) => {
     const [trackList, setTrackList] = useState([]);
     const [iniList, setIniList] = useState([]);
 
-    const RowTest = (props) => {
-        const buttonPressed = (e) => {
-            const id = e.clientX + '-' + e.clientY
-            console.log('id -> : ' + id)
-            console.log('buttonPressed: ', e)
-            props.carSelectCb(id);
-        };
+    const CarSelectorRow = (props) => {
 
         const carSelected = (eventKey, event) => {
 
@@ -53,7 +47,7 @@ const CarSelector = (props) => {
                             {
                                 props.carList.map(
                                     (car) => (
-                                        <DropdownItem
+                                        <DropdownItem key={car.carFolderName}
                                             eventKey={car.carFolderName}>{car.carFolderName}</DropdownItem>
                                     )
                                 )
@@ -75,7 +69,7 @@ const CarSelector = (props) => {
                                         {
                                             trackList.map(
                                                 (track) => (
-                                                    <DropdownItem
+                                                    <DropdownItem key={track.trackFolderName}
                                                         eventKey={track.trackFolderName}>{track.trackFolderName}</DropdownItem>
                                                 )
                                             )
@@ -98,7 +92,7 @@ const CarSelector = (props) => {
                         </div>
                         :
                         <div>
-                            select
+                            select ini
                         </div>
                     }
 
@@ -116,7 +110,7 @@ const CarSelector = (props) => {
     return (
         <Row>
             <Col>
-                <RowTest carList={props.carList} carSelectCb={props.carSelectCb}></RowTest>
+                <CarSelectorRow carList={props.carList} carSelectCb={props.carSelectCb}></CarSelectorRow>
             </Col>
         </Row>
     )

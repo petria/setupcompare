@@ -8,6 +8,7 @@ import EventBus from "./common/EventBus";
 
 const App = () => {
 
+
     useEffect(() => {
 
         EventBus.on("notify_test", (data) => {

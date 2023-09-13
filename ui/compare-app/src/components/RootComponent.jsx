@@ -11,11 +11,45 @@ import EventBus from "../common/EventBus";
 
 const RootComponent = () => {
 
+    const [initialScanResults, setInitialScanResults] = useState(null);
 
     const [carList, setCarList] = useState(null);
 
     useEffect(() => {
-        console.log("use effect!")
+        console.log("use effect SetupIniFileStats")
+        EventBus.on("scan_for_setup_ini_files", (data) => {
+            SetupDataFetcher.scanForSetupIniFiles(
+                (response) => {
+                    console.log("scan results", response);
+                    setInitialScanResults(response.data);
+                    localStorage.setItem("SetupIniFileStats", JSON.stringify(response.data))
+                    EventBus.dispatch("reload_cars")
+                },
+                (err) => {
+                    EventBus.dispatch("notify_test", {type: "ERROR", message: err.message, title: "Back End access"});
+                }
+            );
+        });
+
+        const localData = localStorage.getItem("SetupIniFileStats");
+        if (localData === null) {
+            console.log("send initial scan request!");
+            EventBus.dispatch("scan_for_setup_ini_files")
+        } else {
+            console.log("Got scan stats from localStorage!");
+            setInitialScanResults(JSON.parse(localStorage.getItem("SetupIniFileStats")));
+        }
+
+        return () => {
+            EventBus.remove("scan_for_setup_ini_files");
+        };
+
+    }, []);
+
+
+    useEffect(() => {
+        console.log("use effect reload-cars")
+
 
         EventBus.on("reload_cars", (data) => {
 
@@ -40,7 +74,9 @@ const RootComponent = () => {
 
         });
 
-        EventBus.dispatch("reload_cars")
+        if (carList === null) {
+            EventBus.dispatch("reload_cars")
+        }
 
         return () => {
             EventBus.remove("reload_cars");
@@ -90,11 +126,8 @@ const RootComponent = () => {
     }
 
     const handleReloadButton = (e) => {
-        console.log('handle reload ->', e);
-        EventBus.dispatch("reload_cars");
-//        EventBus.dispatch("notify_test", {type: "ERROR", message: "Sending reload request!", title: "fyi"});
-
-//        createNotification('Sending reload request!');
+//        console.log('handle reload ->', e);
+        EventBus.dispatch("scan_for_setup_ini_files");
     }
 
     return (

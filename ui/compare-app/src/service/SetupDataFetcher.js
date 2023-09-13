@@ -8,7 +8,7 @@ const client = axios.create({
 
 const getTrackListForCar = (carFolderName, ok, error) => {
     const url = "/setups/track-list-for-car";
-    console.log('url: ', url);
+    console.log('POST url: ', url);
     client.post(url, {
         carFolderName: carFolderName
     }).then(
@@ -23,8 +23,24 @@ const getTrackListForCar = (carFolderName, ok, error) => {
 
 }
 
+const scanForSetupIniFiles = (ok, error) => {
+    const url = "/setups/scan-for-setup-ini-files";
+    console.log('GET url: ', url);
+    client.get(url).then(
+        (response) => {
+            ok(response)
+        }
+    )
+        .catch((err) => {
+                error(err);
+            }
+        );
+}
+
+
 const getCarListForSelection = (ok, error) => {
     const url = "/setups/car-list-for-selection";
+    console.log('GET url: ', url);
     client.get(url)
         .then(
             (response) => {
@@ -39,7 +55,8 @@ const getCarListForSelection = (ok, error) => {
 
 const SetupDataFetcher = {
     getCarListForSelection,
-    getTrackListForCar
+    getTrackListForCar,
+    scanForSetupIniFiles
 }
 
 export default SetupDataFetcher;
