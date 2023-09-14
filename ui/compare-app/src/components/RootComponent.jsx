@@ -70,6 +70,8 @@ const RootComponent = () => {
                     EventBus.dispatch("reload_cars")
                 },
                 (err) => {
+                    setSetupIniFileStats(null);
+                    localStorage.removeItem("SetupIniFileStats");
                     EventBus.dispatch("notify_test", {type: "ERROR", message: err.message, title: "Back End access"});
                 }
             );
@@ -90,8 +92,6 @@ const RootComponent = () => {
         };
 
     }, []);
-
-
 
 
     const handleButtonMinus = (e) => {
@@ -126,6 +126,8 @@ const RootComponent = () => {
         EventBus.dispatch("scan_for_setup_ini_files");
     }
 
+    console.log('>> setupIniFileStats', setupIniFileStats);
+
     return (
         <Container className='RootComponent-Container'>
 
@@ -134,15 +136,44 @@ const RootComponent = () => {
             </Row>
 
             {
-                setSetupIniFileStats === null
+                setupIniFileStats === null
                     ?
-                    <Row>
-                        <div>null</div>
-                    </Row>
+                    <div>
+                        <Row>
+                            <Col>configKeyMapFile</Col>
+                        </Row>
+                        <Row>
+                            <Col>scanDir</Col>
+                        </Row>
+                        <Row>
+                            <Col>uniqueSetupFiles</Col>
+                        </Row>
+                        <Row>
+                            <Col>carDirs</Col>
+                        </Row>
+                        <Row>
+                            <Col>trackDirs</Col>
+                        </Row>
+                    </div>
                     :
-                    <Row>
-                        <div>not null</div>
-                    </Row>
+                    <div>
+                        <Row>
+                            <Col>configKeyMapFile</Col>
+                        </Row>
+                        <Row>
+                            <Col>scanDir</Col>
+                        </Row>
+                        <Row>
+                            <Col>uniqueSetupFiles</Col>
+                        </Row>
+                        <Row>
+                            <Col>carDirs</Col>
+                        </Row>
+                        <Row>
+                            <Col>trackDirs</Col>
+                        </Row>
+
+                    </div>
             }
 
             <CarSelector carList={carList} carSelectCb={carSelectCb}></CarSelector>

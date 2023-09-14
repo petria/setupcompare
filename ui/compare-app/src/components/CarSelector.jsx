@@ -39,21 +39,30 @@ const CarSelector = (props) => {
         return (
             <Row className='CarSelector_Row'>
                 <Col>
-                    <Dropdown onSelect={carSelected}>
-                        <Dropdown.Toggle variant="success" id="dropdown-basic">
-                            Select Car
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu className='CarSelector_DropdownMenu'>
-                            {
-                                props.carList.map(
-                                    (car) => (
-                                        <DropdownItem key={car.carFolderName}
-                                            eventKey={car.carFolderName}>{car.carFolderName}</DropdownItem>
-                                    )
-                                )
-                            }
-                        </Dropdown.Menu>
-                    </Dropdown>
+                    {
+                        props.carList !== null
+                            ? <div>
+                                <Dropdown onSelect={carSelected}>
+                                    <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                        Select Car
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu className='CarSelector_DropdownMenu'>
+                                        {
+                                            props.carList.map(
+                                                (car) => (
+                                                    <DropdownItem key={car.carFolderName}
+                                                                  eventKey={car.carFolderName}>{car.carFolderName}</DropdownItem>
+                                                )
+                                            )
+                                        }
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            </div>
+                            :
+                            <div>
+                                <Button variant="danger">Re-scan configs</Button>
+                            </div>
+                    }
                 </Col>
                 <Col>{selectedCar}</Col>
                 <Col>
@@ -70,7 +79,7 @@ const CarSelector = (props) => {
                                             trackList.map(
                                                 (track) => (
                                                     <DropdownItem key={track.trackFolderName}
-                                                        eventKey={track.trackFolderName}>{track.trackFolderName}</DropdownItem>
+                                                                  eventKey={track.trackFolderName}>{track.trackFolderName}</DropdownItem>
                                                 )
                                             )
                                         }
@@ -101,10 +110,6 @@ const CarSelector = (props) => {
             </Row>
 
         )
-    }
-
-    if (props.carList === null) {
-        return <>Try to reload </>
     }
 
     return (
