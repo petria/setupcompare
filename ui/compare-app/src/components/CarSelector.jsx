@@ -12,11 +12,13 @@ const CarSelector = (props) => {
     const [selectedCar, setSelectedCar] = useState("-");
     const [selectCarText, setSelectCarText] = useState("Select Car")
 
+    const [trackList, setTrackList] = useState([]);
     const [selectedTrack, setSelectedTrack] = useState("-");
     const [selectTrackText, setSelectTrackText] = useState("Select Track")
 
-    const [trackList, setTrackList] = useState([]);
-    const [iniList, setIniList] = useState([]);
+    const [setupIniList, setSetupIniList] = useState([]);
+    const [selectedSetupIni, setSelectedSetupIni] = useState("-");
+    const [selectSetupIniText, setSelectSetupIniText] = useState("Select setup ini")
 
     useEffect(() => {
         if (props.carList) {
@@ -32,6 +34,23 @@ const CarSelector = (props) => {
         }
     }, [trackList]);
 
+    useEffect(() => {
+        if (setupIniList !== null) {
+            const text = "Select setup ini (" + setupIniList.length + ")";
+            setSelectSetupIniText(text);
+        }
+    }, [setupIniList]);
+
+    useEffect(() => {
+        props.carSelectCb(
+            {
+                selectedCar: selectedCar,
+                selectedTrack: selectedTrack,
+                selectedSetupIni: selectedSetupIni
+            }
+        )
+    }, [selectedCar, selectedTrack, selectedSetupIni]);
+
     const CarSelectorRow = (props) => {
 
         const carSelected = (eventKey, event) => {
@@ -43,6 +62,7 @@ const CarSelector = (props) => {
                     console.log('response', response);
                     setTrackList(response.data.trackList);
                     setSelectedTrack('-');
+                    setSelectedSetupIni('-')
                 },
                 (error) => {
                     console.log('error', error); // TODO
@@ -57,15 +77,18 @@ const CarSelector = (props) => {
                 eventKey,
                 (response) => {
                     console.log('response', response);
-//                    setTrackList(response.data.trackList);
-//                    setSelectedTrack('-');
+                    setSetupIniList(response.data.setupList);
                 },
                 (error) => {
+                    setSetupIniList(null);
                     console.log('error', error); // TODO
                 }
             );
+        }
 
-
+        const setupIniSelected = (eventKey, event) => {
+            setSelectedSetupIni(eventKey);
+            console.log('setupIniSelected', eventKey);
         }
 
         return (
@@ -133,12 +156,27 @@ const CarSelector = (props) => {
                         </div>
                         :
                         <div>
-                            select ini
+                            <Dropdown onSelect={setupIniSelected}>
+                                <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                    {selectSetupIniText}
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu>
+                                    {
+                                        setupIniList.map(
+                                            (setupIni) => (
+                                                <DropdownItem key={setupIni.id}
+                                                              eventKey={setupIni.setupIniFileName}>{setupIni.setupIniFileName}</DropdownItem>
+                                            )
+                                        )
+                                    }
+                                </Dropdown.Menu>
+                            </Dropdown>
+
                         </div>
                     }
-
-
                 </Col>
+                <Col>{selectedSetupIni}</Col>
+
             </Row>
 
         )
