@@ -37,7 +37,7 @@ const CarSelector = (props) => {
         }
 
         return (
-            <Row>
+            <Row className='CarSelector_Row'>
                 <Col>
                     <Dropdown onSelect={carSelected}>
                         <Dropdown.Toggle variant="success" id="dropdown-basic">

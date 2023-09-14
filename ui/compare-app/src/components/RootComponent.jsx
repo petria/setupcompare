@@ -11,45 +11,24 @@ import EventBus from "../common/EventBus";
 
 const RootComponent = () => {
 
-    const [initialScanResults, setInitialScanResults] = useState(null);
+    const [iniSections, setIniSections] = useState([
+        {
+            "name": "Base Setup",
+            "selected": "-"
+
+        },
+        {
+            "name": "Setup #1",
+            "selected": "-"
+        }
+    ]);
+
+    const [setupIniFileStats, setSetupIniFileStats] = useState(null);
 
     const [carList, setCarList] = useState(null);
 
     useEffect(() => {
-        console.log("use effect SetupIniFileStats")
-        EventBus.on("scan_for_setup_ini_files", (data) => {
-            SetupDataFetcher.scanForSetupIniFiles(
-                (response) => {
-                    console.log("scan results", response);
-                    setInitialScanResults(response.data);
-                    localStorage.setItem("SetupIniFileStats", JSON.stringify(response.data))
-                    EventBus.dispatch("reload_cars")
-                },
-                (err) => {
-                    EventBus.dispatch("notify_test", {type: "ERROR", message: err.message, title: "Back End access"});
-                }
-            );
-        });
-
-        const localData = localStorage.getItem("SetupIniFileStats");
-        if (localData === null) {
-            console.log("send initial scan request!");
-            EventBus.dispatch("scan_for_setup_ini_files")
-        } else {
-            console.log("Got scan stats from localStorage!");
-            setInitialScanResults(JSON.parse(localStorage.getItem("SetupIniFileStats")));
-        }
-
-        return () => {
-            EventBus.remove("scan_for_setup_ini_files");
-        };
-
-    }, []);
-
-
-    useEffect(() => {
         console.log("use effect reload-cars")
-
 
         EventBus.on("reload_cars", (data) => {
 
@@ -74,28 +53,45 @@ const RootComponent = () => {
 
         });
 
-        if (carList === null) {
-            EventBus.dispatch("reload_cars")
-        }
-
         return () => {
             EventBus.remove("reload_cars");
         };
 
     }, []);
 
+    useEffect(() => {
+        console.log("use effect SetupIniFileStats")
+        EventBus.on("scan_for_setup_ini_files", (data) => {
+            SetupDataFetcher.scanForSetupIniFiles(
+                (response) => {
+                    console.log("scan results", response);
+                    setSetupIniFileStats(response.data);
+                    localStorage.setItem("SetupIniFileStats", JSON.stringify(response.data))
+                    EventBus.dispatch("reload_cars")
+                },
+                (err) => {
+                    EventBus.dispatch("notify_test", {type: "ERROR", message: err.message, title: "Back End access"});
+                }
+            );
+        });
 
-    const [iniSections, setIniSections] = useState([
-        {
-            "name": "Base Setup",
-            "selected": "-"
-
-        },
-        {
-            "name": "Setup #1",
-            "selected": "-"
+        const localData = localStorage.getItem("SetupIniFileStats");
+        if (localData === null) {
+            console.log("send initial scan request!");
+            EventBus.dispatch("scan_for_setup_ini_files")
+        } else {
+            setSetupIniFileStats(JSON.parse(localStorage.getItem("SetupIniFileStats")));
+            console.log("Got scan stats from localStorage!");
+            EventBus.dispatch("reload_cars")
         }
-    ]);
+
+        return () => {
+            EventBus.remove("scan_for_setup_ini_files");
+        };
+
+    }, []);
+
+
 
 
     const handleButtonMinus = (e) => {
@@ -137,6 +133,17 @@ const RootComponent = () => {
                 <Col><Button onClick={handleReloadButton} variant="danger">Re-scan configs</Button></Col>
             </Row>
 
+            {
+                setSetupIniFileStats === null
+                    ?
+                    <Row>
+                        <div>null</div>
+                    </Row>
+                    :
+                    <Row>
+                        <div>not null</div>
+                    </Row>
+            }
 
             <CarSelector carList={carList} carSelectCb={carSelectCb}></CarSelector>
 
