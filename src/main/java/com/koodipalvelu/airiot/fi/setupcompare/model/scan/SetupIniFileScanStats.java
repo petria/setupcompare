@@ -7,9 +7,9 @@ import lombok.ToString;
 @ToString
 public class SetupIniFileScanStats {
 
-    private String configKeyMapFile;
-
     private String scanDir;
+
+    private String configKeyMapFile;
 
     private int uniqueSetupFiles;
     private int carDirs;

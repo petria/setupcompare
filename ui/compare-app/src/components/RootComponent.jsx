@@ -136,32 +136,37 @@ const RootComponent = () => {
             </Row>
 
             {
-                setupIniFileStats === null
+                setupIniFileStats !== null
                     ?
-                    <div>
-                        <Row>
-                            <Col>configKeyMapFile</Col>
-                        </Row>
+                    <div className='RootComponent-Reload-Row'>
                         <Row>
                             <Col>scanDir</Col>
+                            <Col>{setupIniFileStats.scanDir}</Col>
+                        </Row>
+                        <Row>
+                            <Col>configKeyMapFile</Col>
+                            <Col>{setupIniFileStats.configKeyMapFile}</Col>
                         </Row>
                         <Row>
                             <Col>uniqueSetupFiles</Col>
+                            <Col>{setupIniFileStats.uniqueSetupFiles}</Col>
                         </Row>
                         <Row>
                             <Col>carDirs</Col>
+                            <Col>{setupIniFileStats.carDirs}</Col>
                         </Row>
                         <Row>
                             <Col>trackDirs</Col>
+                            <Col>{setupIniFileStats.trackDirs}</Col>
                         </Row>
                     </div>
                     :
                     <div>
                         <Row>
-                            <Col>configKeyMapFile</Col>
+                            <Col>scanDir</Col>
                         </Row>
                         <Row>
-                            <Col>scanDir</Col>
+                            <Col>configKeyMapFile</Col>
                         </Row>
                         <Row>
                             <Col>uniqueSetupFiles</Col>
