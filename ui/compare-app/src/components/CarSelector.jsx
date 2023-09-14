@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 
 import {Button, Dropdown} from "react-bootstrap";
 import 'react-dropdown/style.css';
@@ -10,9 +10,27 @@ import SetupDataFetcher from "../service/SetupDataFetcher";
 const CarSelector = (props) => {
 
     const [selectedCar, setSelectedCar] = useState("-");
+    const [selectCarText, setSelectCarText] = useState("Select Car")
+
     const [selectedTrack, setSelectedTrack] = useState("-");
+    const [selectTrackText, setSelectTrackText] = useState("Select Track")
+
     const [trackList, setTrackList] = useState([]);
     const [iniList, setIniList] = useState([]);
+
+    useEffect(() => {
+        if (props.carList) {
+            const text = "Select car (" + props.carList.length + ")";
+            setSelectCarText(text);
+        }
+    }, [props.carList]);
+
+    useEffect(() => {
+        if (trackList !== null) {
+            const text = "Select track (" + trackList.length + ")";
+            setSelectTrackText(text);
+        }
+    }, [trackList]);
 
     const CarSelectorRow = (props) => {
 
@@ -44,7 +62,7 @@ const CarSelector = (props) => {
                             ? <div>
                                 <Dropdown onSelect={carSelected}>
                                     <Dropdown.Toggle variant="success" id="dropdown-basic">
-                                        Select Car
+                                        {selectCarText}
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu className='CarSelector_DropdownMenu'>
                                         {
@@ -72,7 +90,7 @@ const CarSelector = (props) => {
                             <div>
                                 <Dropdown onSelect={trackSelected}>
                                     <Dropdown.Toggle variant="success" id="dropdown-basic">
-                                        Select Track
+                                        {selectTrackText}
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>
                                         {
@@ -118,7 +136,7 @@ const CarSelector = (props) => {
                 <CarSelectorRow carList={props.carList} carSelectCb={props.carSelectCb}></CarSelectorRow>
             </Col>
         </Row>
-    )
+    );
 };
 
 export default CarSelector;
