@@ -1,9 +1,7 @@
 package com.koodipalvelu.airiot.fi.setupcompare.service;
 
 import com.koodipalvelu.airiot.fi.setupcompare.compare.SetupIniComparator;
-import com.koodipalvelu.airiot.fi.setupcompare.model.carselector.CarForSelection;
-import com.koodipalvelu.airiot.fi.setupcompare.model.carselector.TrackForCarSelection;
-import com.koodipalvelu.airiot.fi.setupcompare.model.carselector.TrackListForCarResponse;
+import com.koodipalvelu.airiot.fi.setupcompare.model.carselector.*;
 import com.koodipalvelu.airiot.fi.setupcompare.model.scan.Car;
 import com.koodipalvelu.airiot.fi.setupcompare.model.scan.SetupIniFileScanStats;
 import com.koodipalvelu.airiot.fi.setupcompare.model.scan.SetupScanResults;
@@ -236,4 +234,34 @@ public class SetupsService {
 
         return list;
     }
+
+    public SetupListForCarAndTrackResponse getSetupListForCarAndTrack(String carFolderName, String trackFolderName) {
+        List<SetupForCarSelection> list = new ArrayList<>();
+
+        Car car = this.setupsMap.get(carFolderName);
+        if (car != null) {
+            Track track = car.getTracksWithSetup().get(trackFolderName);
+            if (track != null) {
+                Stream<String> sorted = track.getIniFilesMap().keySet().stream().sorted();
+                int id = 0;
+                for (String setupKeyName : sorted.toList()) {
+                    String setupName = track.getIniFilesMap().get(setupKeyName);
+                    SetupForCarSelection forCarSelection
+                            = SetupForCarSelection.builder()
+                            .id(id++)
+                            .setupIniFileName(setupName)
+                            .build();
+                    list.add(forCarSelection);
+                }
+            }
+        }
+
+        SetupListForCarAndTrackResponse response = SetupListForCarAndTrackResponse
+                .builder()
+                .setupList(list)
+                .build();
+
+        return response;
+    }
+
 }

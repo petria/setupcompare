@@ -20,8 +20,25 @@ const getTrackListForCar = (carFolderName, ok, error) => {
                 error(err);
             }
         );
-
 }
+
+const getSetupListForCarAndTrack = (carFolderName, trackFolderName, ok, error) => {
+    const url = "/setups/setup-list-for-car-and-track";
+    console.log('POST url: ', url);
+    client.post(url, {
+        carFolderName: carFolderName,
+        trackFolderName: trackFolderName
+    }).then(
+        (response) => {
+            ok(response)
+        }
+    )
+        .catch((err) => {
+                error(err);
+            }
+        );
+}
+
 
 const scanForSetupIniFiles = (ok, error) => {
     const url = "/setups/scan-for-setup-ini-files";
@@ -55,6 +72,7 @@ const getCarListForSelection = (ok, error) => {
 
 const SetupDataFetcher = {
     getCarListForSelection,
+    getSetupListForCarAndTrack,
     getTrackListForCar,
     scanForSetupIniFiles
 }

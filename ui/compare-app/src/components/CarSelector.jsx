@@ -52,6 +52,20 @@ const CarSelector = (props) => {
 
         const trackSelected = (eventKey, event) => {
             setSelectedTrack(eventKey);
+            SetupDataFetcher.getSetupListForCarAndTrack(
+                selectedCar,
+                eventKey,
+                (response) => {
+                    console.log('response', response);
+//                    setTrackList(response.data.trackList);
+//                    setSelectedTrack('-');
+                },
+                (error) => {
+                    console.log('error', error); // TODO
+                }
+            );
+
+
         }
 
         return (
