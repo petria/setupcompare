@@ -27,6 +27,11 @@ const RootComponent = () => {
 
     const [carList, setCarList] = useState(null);
 
+    const [carTrackIniSelection, setCarTrackIniSelection]
+        = useState(
+        {allSelected: false}
+    );
+
     useEffect(() => {
         console.log("use effect reload-cars")
 
@@ -118,7 +123,8 @@ const RootComponent = () => {
 
     const carSelectCb = (data) => {
         console.log('callback -> ', data);
-//        setCallBackData(data);
+        EventBus.dispatch("notify_test", {type: "INFO", message: data.allSelected ? "true" : "false", title: "CB"});
+        setCarTrackIniSelection(data);
     }
 
     const handleReloadButton = (e) => {
@@ -126,7 +132,15 @@ const RootComponent = () => {
         EventBus.dispatch("scan_for_setup_ini_files");
     }
 
-    console.log('>> setupIniFileStats', setupIniFileStats);
+    const handleButtonSet = (e, name) => {
+        console.log("handleButtonSet: ", name);
+        const tmp = [...iniSections];
+        let section = tmp.find((section) => section.name === name);
+        section.selected = carTrackIniSelection.selectedCar.concat(" / ").concat(carTrackIniSelection.selectedTrack).concat(" / ").concat(carTrackIniSelection.selectedSetupIni);
+        console.log("section: ", section);
+        setIniSections(tmp);
+
+    }
 
     return (
         <Container className='RootComponent-Container'>
@@ -183,27 +197,37 @@ const RootComponent = () => {
 
             <CarSelector carList={carList} carSelectCb={carSelectCb}></CarSelector>
 
+            {
+                carTrackIniSelection !== null
+                    ?
+                    <Row className='RootComponent-Selection-Row'>
+                        <Col>Selection:</Col>
+                        <Col>{carTrackIniSelection.selectedCar}</Col>
+                        <Col>{carTrackIniSelection.selectedTrack}</Col>
+                        <Col>{carTrackIniSelection.selectedSetupIni}</Col>
+                    </Row>
+                    :
+                    <></>
+            }
+
             <Row>
                 <Col><Button onClick={(e) => handleButtonMinus(e)}
-                             className='RootComponent-ButtonMinus'>-</Button><Button
-                    onClick={handleButtonPlus}>+</Button></Col>
+                             className='RootComponent-ButtonMinus'>-</Button>
+                    <Button onClick={handleButtonPlus}>+</Button>
+                </Col>
             </Row>
-
             {
                 iniSections.map(
                     (section, idx) => (
                         <Row key={idx}>
-                            <Col>{section.name}</Col>
+                            <Col><Button disabled={!carTrackIniSelection.allSelected} variant="primary"
+                                         onClick={(e) => handleButtonSet(e, section.name)}>SET</Button> {section.name}
+                            </Col>
                             <Col>{section.selected}</Col>
-
                         </Row>
                     )
                 )
             }
-
-            <Row className='RootComponent-Row'>
-
-            </Row>
 
             <Row className='RootComponent-Row'>
                 {

@@ -18,6 +18,11 @@
   margin-right: 5px;
 }
 
+.RootComponent-Selection-Row {
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
 .RootComponent-Container {
   margin-top: 50px;
 }

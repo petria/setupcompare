@@ -42,8 +42,10 @@ const CarSelector = (props) => {
     }, [setupIniList]);
 
     useEffect(() => {
+        const allSelected = selectedCar !== '-' && selectedTrack !== '-' && selectedSetupIni !== '-';
         props.carSelectCb(
             {
+                allSelected: allSelected,
                 selectedCar: selectedCar,
                 selectedTrack: selectedTrack,
                 selectedSetupIni: selectedSetupIni
