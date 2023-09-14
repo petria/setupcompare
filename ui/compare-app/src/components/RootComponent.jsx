@@ -123,12 +123,10 @@ const RootComponent = () => {
 
     const carSelectCb = (data) => {
         console.log('callback -> ', data);
-        EventBus.dispatch("notify_test", {type: "INFO", message: data.allSelected ? "true" : "false", title: "CB"});
         setCarTrackIniSelection(data);
     }
 
     const handleReloadButton = (e) => {
-//        console.log('handle reload ->', e);
         EventBus.dispatch("scan_for_setup_ini_files");
     }
 
