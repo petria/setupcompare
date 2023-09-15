@@ -33,7 +33,8 @@
 }
 
 .RootComponent-Row {
-  background-color: hotpink;
+  margin-top: 10px;
+  background-color: yellow;
 }
 
 .RootComponent-Col {

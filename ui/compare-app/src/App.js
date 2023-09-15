@@ -11,7 +11,7 @@ const App = () => {
 
     useEffect(() => {
 
-        EventBus.on("notify_test", (data) => {
+        EventBus.on("notify_request", (data) => {
 
             if (data.type === 'ERROR') {
 
@@ -30,7 +30,7 @@ const App = () => {
         });
 
         return () => {
-            EventBus.remove("notify_test");
+            EventBus.remove("notify_request");
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);

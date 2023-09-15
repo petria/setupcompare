@@ -1,5 +1,6 @@
 package com.koodipalvelu.airiot.fi.setupcompare.rest;
 
+import com.koodipalvelu.airiot.fi.setupcompare.model.carselector.CompareSetupsRequest;
 import com.koodipalvelu.airiot.fi.setupcompare.model.carselector.SetupListForCarAndTrackRequest;
 import com.koodipalvelu.airiot.fi.setupcompare.model.carselector.TrackListForCarRequest;
 import com.koodipalvelu.airiot.fi.setupcompare.service.SetupsService;
@@ -52,6 +53,12 @@ public class SetupController {
     @PostMapping("/setup-list-for-car-and-track")
     public ResponseEntity<?> getSetupListForCarAndTrack(@RequestBody SetupListForCarAndTrackRequest request) {
         return ResponseEntity.ok(service.getSetupListForCarAndTrack(request.getCarFolderName(), request.getTrackFolderName()));
+    }
+
+    @CrossOrigin(origins = "*")
+    @PostMapping("/compare-setups")
+    public ResponseEntity<?> compareSetups(@RequestBody CompareSetupsRequest request) throws IOException {
+        return ResponseEntity.ok(service.compareSetups(request.getIniSections()));
     }
 
     @CrossOrigin(origins = "*")

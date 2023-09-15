@@ -111,6 +111,7 @@ public class SetupsService {
                         .carFolder(car)
                         .trackFolder(track)
                         .iniFilePath(new ArrayList<>())
+                        .iniFilesMap(new HashMap<>())
                         .build();
                 carModel.setIniFileCount(iniFiles.length);
 
@@ -125,7 +126,9 @@ public class SetupsService {
                         trackModel.setTrackName(track);
                         carModel.getTracksWithSetup().put(track, trackModel);
                     }
-                    trackModel.getIniFilesMap().put(iniFile, iniFile);
+                    String pathToIni = path + "/" + iniFile;
+                    trackModel.getIniFilesMap().put(iniFile, pathToIni);
+                    results.getIniFilesMap().put(iniFile, pathToIni);
                 }
 
 
@@ -150,25 +153,6 @@ public class SetupsService {
 
         return stats;
     }
-
-
-    private void compare() throws IOException {
-        SetupScanResults scanResults = resultsMap.get("ks_porsche_911_gt1__monza");
-        log.debug("Compare    : {}", scanResults);
-        int idx = 0;
-        for (String iniFile : scanResults.getIniFilePath()) {
-            log.debug("ini        : {} = {}", idx, iniFile);
-            idx++;
-        }
-        String iniBase = scanResults.getIniFilePath().get(0);
-        String iniCompare = scanResults.getIniFilePath().get(1);
-        Map<String, String> baseValues = reader.parseValues(reader.readSetupFile(iniBase));
-        Map<String, String> otherValues = reader.parseValues(reader.readSetupFile(iniCompare));
-        SetupIniComparator comparator = new SetupIniComparator(configKeyMapping);
-        comparator.compare(baseValues, otherValues);
-
-    }
-
 
     public Map<String, String> getConfigKeyMapping() {
         return configKeyMapping;
@@ -264,4 +248,53 @@ public class SetupsService {
         return response;
     }
 
+
+    private void compare() throws IOException {
+        SetupScanResults scanResults = resultsMap.get("ks_porsche_911_gt1__monza");
+        log.debug("Compare    : {}", scanResults);
+        int idx = 0;
+        for (String iniFile : scanResults.getIniFilePath()) {
+            log.debug("ini        : {} = {}", idx, iniFile);
+            idx++;
+        }
+        String iniBase = scanResults.getIniFilePath().get(0);
+        String iniCompare = scanResults.getIniFilePath().get(1);
+        Map<String, String> baseValues = reader.parseValues(reader.readSetupFile(iniBase));
+        Map<String, String> otherValues = reader.parseValues(reader.readSetupFile(iniCompare));
+        SetupIniComparator comparator = new SetupIniComparator(configKeyMapping);
+        comparator.compare(baseValues, otherValues);
+
+    }
+
+    private Map<String, String> getSetupIniValues(String selected) throws IOException {
+        String[] split = selected.split(" / ");
+        if (split.length != 3) {
+            return null;
+        }
+        String key = String.format("%s__%s", split[0], split[1]);
+
+        SetupScanResults setupScanResults = resultsMap.get(key);
+        String iniBase = setupScanResults.getIniFilesMap().get(split[2]);
+
+
+        Map<String, String> baseValues = reader.parseValues(reader.readSetupFile(iniBase));
+        return baseValues;
+    }
+
+    public CompareSetupsResponse compareSetups(List<IniSections> iniList) throws IOException {
+        CompareSetupsResponse response = CompareSetupsResponse.builder().compareResults("fufuf").build();
+
+        Map<String, String> baseValues = getSetupIniValues(iniList.get(0).getSelected());
+        Map<String, String> otherValues = getSetupIniValues(iniList.get(1).getSelected());
+
+        SetupIniComparator comparator = new SetupIniComparator(configKeyMapping);
+        comparator.compare(baseValues, otherValues);
+
+//        iniSectionsList.stream().filter(iniSections -> {iniSections.getName().equals("Base Setup")});
+
+//        resultsMap.get()
+
+
+        return response;
+    }
 }

@@ -32,14 +32,25 @@ const getSetupListForCarAndTrack = (carFolderName, trackFolderName, ok, error) =
         (response) => {
             ok(response)
         }
-    )
-        .catch((err) => {
-                error(err);
-            }
-        );
+    ).catch((err) => {
+            error(err);
+        }
+    );
 }
 
+const sendCompareSetupsRequest = (iniSections, ok, error) => {
+    const url = "/setups/compare-setups";
+    console.log('POST url: ', url);
+    client.post(url, {iniSections}).then(
+        (response) => {
+            ok(response)
+        }
+    ).catch((err) => {
+            error(err);
+        }
+    );
 
+}
 const scanForSetupIniFiles = (ok, error) => {
     const url = "/setups/scan-for-setup-ini-files";
     console.log('GET url: ', url);
@@ -47,11 +58,10 @@ const scanForSetupIniFiles = (ok, error) => {
         (response) => {
             ok(response)
         }
-    )
-        .catch((err) => {
-                error(err);
-            }
-        );
+    ).catch((err) => {
+            error(err);
+        }
+    );
 }
 
 
@@ -63,18 +73,18 @@ const getCarListForSelection = (ok, error) => {
             (response) => {
                 ok(response);
             }
-        )
-        .catch((err) => {
-                error(err)
-            }
-        );
+        ).catch((err) => {
+            error(err)
+        }
+    );
 }
 
 const SetupDataFetcher = {
     getCarListForSelection,
     getSetupListForCarAndTrack,
     getTrackListForCar,
-    scanForSetupIniFiles
+    scanForSetupIniFiles,
+    sendCompareSetupsRequest
 }
 
 export default SetupDataFetcher;

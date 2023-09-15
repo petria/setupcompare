@@ -42,24 +42,57 @@ const RootComponent = () => {
             SetupDataFetcher.getCarListForSelection(
                 (response) => {
                     console.log('response', response);
-                    EventBus.dispatch("notify_test", {
+                    EventBus.dispatch("notify_request", {
                         type: "INFO",
-                        message: "Loaded " + response.data.length + " cars!",
+                        message: "Loaded " + response.data.length + " cars with setup ini files!",
                         title: "Info"
                     });
                     setCarList(response.data);
                 },
                 (err) => {
                     console.log("Network error: ", err);
-                    EventBus.dispatch("notify_test", {type: "ERROR", message: err.message, title: "Back End access"});
+                    EventBus.dispatch("notify_request", {
+                        type: "ERROR",
+                        message: err.message,
+                        title: "Back End access"
+                    });
                     setCarList(null);
                 }
             );
 
         });
 
+
         return () => {
             EventBus.remove("reload_cars");
+        };
+
+    }, []);
+
+    useEffect(() => {
+        EventBus.on("compare_setups", (data) => {
+
+            console.log('Reloading cars from backend!');
+
+            SetupDataFetcher.sendCompareSetupsRequest(
+                iniSections,
+                (response) => {
+                    console.log('response', response);
+                },
+                (err) => {
+                    EventBus.dispatch("notify_request", {
+                        type: "ERROR",
+                        message: err.message,
+                        title: "Back End access"
+                    });
+                }
+            );
+
+        });
+
+
+        return () => {
+            EventBus.remove("compare_setups");
         };
 
     }, []);
@@ -77,7 +110,11 @@ const RootComponent = () => {
                 (err) => {
                     setSetupIniFileStats(null);
                     localStorage.removeItem("SetupIniFileStats");
-                    EventBus.dispatch("notify_test", {type: "ERROR", message: err.message, title: "Back End access"});
+                    EventBus.dispatch("notify_request", {
+                        type: "ERROR",
+                        message: err.message,
+                        title: "Back End access"
+                    });
                 }
             );
         });
@@ -137,7 +174,7 @@ const RootComponent = () => {
         section.selected = carTrackIniSelection.selectedCar.concat(" / ").concat(carTrackIniSelection.selectedTrack).concat(" / ").concat(carTrackIniSelection.selectedSetupIni);
         console.log("section: ", section);
         setIniSections(tmp);
-
+        EventBus.dispatch("compare_setups");
     }
 
     return (
@@ -160,16 +197,16 @@ const RootComponent = () => {
                             <Col>{setupIniFileStats.configKeyMapFile}</Col>
                         </Row>
                         <Row>
-                            <Col>uniqueSetupFiles</Col>
-                            <Col>{setupIniFileStats.uniqueSetupFiles}</Col>
-                        </Row>
-                        <Row>
                             <Col>carDirs</Col>
                             <Col>{setupIniFileStats.carDirs}</Col>
                         </Row>
                         <Row>
                             <Col>trackDirs</Col>
                             <Col>{setupIniFileStats.trackDirs}</Col>
+                        </Row>
+                        <Row>
+                            <Col>uniqueSetupFiles</Col>
+                            <Col>{setupIniFileStats.uniqueSetupFiles}</Col>
                         </Row>
                     </div>
                     :
