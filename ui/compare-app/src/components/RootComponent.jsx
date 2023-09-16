@@ -5,7 +5,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import {Button} from "react-bootstrap";
 import CarSelector from "./CarSelector";
-
+import DifferenceTable from "./DifferenceTable";
 import SetupDataFetcher from "../service/SetupDataFetcher";
 import EventBus from "../common/EventBus";
 
@@ -31,6 +31,8 @@ const RootComponent = () => {
         = useState(
         {allSelected: false}
     );
+
+    const [differenceData, setDifferenceData] = useState(null);
 
     useEffect(() => {
         console.log("use effect reload-cars")
@@ -78,6 +80,7 @@ const RootComponent = () => {
                 iniSections,
                 (response) => {
                     console.log('response', response);
+                    setDifferenceData(response.data);
                 },
                 (err) => {
                     EventBus.dispatch("notify_request", {
@@ -264,6 +267,18 @@ const RootComponent = () => {
                 )
             }
 
+            {
+                differenceData !== null
+                    ?
+                    <Row>
+                        <div><DifferenceTable data={differenceData.differences}></DifferenceTable></div>
+                    </Row>
+                    :
+                    <Row>
+                        <div>diff data null</div>
+                    </Row>
+            }
+
             <Row className='RootComponent-Row'>
                 {
                     iniSections.map(
@@ -274,9 +289,6 @@ const RootComponent = () => {
                 }
             </Row>
 
-            <Row className='RootComponent-Row'>
-                <Col className='RootComponent-Col'>OneCOL</Col>
-            </Row>
         </Container>
     );
 }

@@ -7,9 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -17,6 +15,9 @@ public class SetupFilesReader {
 
     @Getter
     private Map<String, String> keyToConfigGroup = new HashMap<>();
+
+    @Getter
+    private Map<String, Set<String>> configKeyGroups = new HashMap<>();
 
     public List<String> readSetupFile(String fileName) throws IOException {
         return Files.readAllLines(Path.of(fileName));
@@ -66,6 +67,11 @@ public class SetupFilesReader {
                 throw new RuntimeException("Invalid line in " + mappingIniFileName + ": " + line);
             }
             keyToConfigGroup.put(split[0], split[1]);
+
+            Set<String> configKeysByGroup = configKeyGroups.computeIfAbsent(split[1], k -> new TreeSet<>());
+            configKeysByGroup.add(split[0]);
+
+
         }
 
         return keyToConfigGroup;

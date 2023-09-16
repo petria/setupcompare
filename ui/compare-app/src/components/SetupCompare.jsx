@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import CarSelector from "./CarSelector";
 
 const client = axios.create({
     baseURL: "http://localhost:3002/api"
@@ -23,7 +22,7 @@ const SetupCompare = () => {
     const [carList, setCarList] = useState(null);
 
     useEffect(() => {
-        console.log("use effect!")
+        console.log("!!!!!!!!!!!!!!!!!!!!!!!!! use effect!")
 
         async function getSetupData() {
             const url = "http://localhost:8080/api/setups/carList";
@@ -31,7 +30,7 @@ const SetupCompare = () => {
             client.get(url)
                 .then(
                     (response) => {
-                        console.log('response', response);
+                        console.log('GETSETUPDATA >>> response', response);
                         setData(response);
                     }
                 )
@@ -64,8 +63,8 @@ const SetupCompare = () => {
 
         }
 
-        getCarListForSelection();
-//        getSetupData();
+//        getCarListForSelection();
+        getSetupData();
 
     }, []);
 
@@ -115,6 +114,12 @@ const SetupCompare = () => {
     }
 
     const CompareTable = (props) => {
+        if (props.data === null) {
+            return (
+                <>NULLLL</>
+            );
+        }
+
 
         const tableTds = props.data.setups.map(
             (setup) =>
@@ -146,21 +151,14 @@ const SetupCompare = () => {
         }
     }
 
+    return (
+        <div>
+            TT:
+            <CompareTable data={data}></CompareTable>
+            DD:
+        </div>
+    );
 
-    if (carList !== null) {
-        return (
-            <div>
-                <CarSelector carList={carList} carSelectCb={carSelectCb} selectionData={selectionData}></CarSelector>
-                <ShowSelected callBackData={callBackData}></ShowSelected>
-            </div>
-        )
-    } else {
-        return (
-            <>
-                Loading setups...
-            </>
-        )
-    }
 }
 
 export default SetupCompare;

@@ -1,6 +1,5 @@
 package com.koodipalvelu.airiot.fi.setupcompare.model.carselector;
 
-
 import lombok.Builder;
 import lombok.Data;
 
@@ -8,8 +7,7 @@ import java.util.List;
 
 @Builder
 @Data
-public class CompareSetupsResponse {
+public class CompareDifference {
 
-    private String compareResults;
-    private List<CompareDifference> differences;
+    private List<String> differences;
 }

@@ -229,11 +229,11 @@ public class SetupsService {
                 Stream<String> sorted = track.getIniFilesMap().keySet().stream().sorted();
                 int id = 0;
                 for (String setupKeyName : sorted.toList()) {
-                    String setupName = track.getIniFilesMap().get(setupKeyName);
+//                    String setupName = track.getIniFilesMap().get(setupKeyName);
                     SetupForCarSelection forCarSelection
                             = SetupForCarSelection.builder()
                             .id(id++)
-                            .setupIniFileName(setupName)
+                            .setupIniFileName(setupKeyName)
                             .build();
                     list.add(forCarSelection);
                 }
@@ -282,19 +282,38 @@ public class SetupsService {
     }
 
     public CompareSetupsResponse compareSetups(List<IniSections> iniList) throws IOException {
-        CompareSetupsResponse response = CompareSetupsResponse.builder().compareResults("fufuf").build();
 
+        CompareSetupsResponse response
+                = CompareSetupsResponse.builder().compareResults("fufuf").build();
+        List<CompareDifference> differenceList = new ArrayList<>();
         Map<String, String> baseValues = getSetupIniValues(iniList.get(0).getSelected());
         Map<String, String> otherValues = getSetupIniValues(iniList.get(1).getSelected());
 
-        SetupIniComparator comparator = new SetupIniComparator(configKeyMapping);
-        comparator.compare(baseValues, otherValues);
+        if (baseValues != null && otherValues != null) {
+            SetupIniComparator comparator = new SetupIniComparator(configKeyMapping);
+            Map<String, List<String>> differenceMap = comparator.compare(baseValues, otherValues);
 
-//        iniSectionsList.stream().filter(iniSections -> {iniSections.getName().equals("Base Setup")});
+            Stream<String> sortedKeys = reader.getConfigKeyGroups().keySet().stream().sorted();
+            for (String groupKey : sortedKeys.toList()) {
 
-//        resultsMap.get()
-
-
+                Set<String> configKeyStrings = reader.getConfigKeyGroups().get(groupKey);
+                for (String configKey : configKeyStrings) {
+                    //                   log.debug("{} - {}", groupKey, configKey);
+                    List<String> difference = differenceMap.get(configKey);
+                    if (difference != null) {
+                        log.debug("{} - {} - {} <-> {}", groupKey, configKey, difference.get(0), difference.get(1));
+                        List<String> list = new ArrayList<>();
+                        list.add(groupKey);
+                        list.add(configKey);
+                        list.add(difference.get(0));
+                        list.add(difference.get(1));
+                        CompareDifference compareDifference = CompareDifference.builder().differences(list).build();
+                        differenceList.add(compareDifference);
+                    }
+                }
+            }
+        }
+        response.setDifferences(differenceList);
         return response;
     }
 }
