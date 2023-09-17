@@ -13,7 +13,7 @@ const DifferenceTable = (props) => {
     );
 
     const headers = ['Section', 'Setting'];
-    props.iniSections.map(
+    props.iniSections.forEach(
         (section) => {
             headers.push(section.name);
         }
