@@ -5,21 +5,37 @@ const DifferenceTable = (props) => {
     const tableRows = props.data.map(
         (row, idx) =>
             <tr key={idx}>
-                <th>{row.differences[0]}</th>
-                <th>{row.differences[1]}</th>
-                <th>{row.differences[2]}</th>
-                <th>{row.differences[3]}</th>
+                <td>{row.differences[0]}</td>
+                <td>{row.differences[1]}</td>
+                <td>{row.differences[2]}</td>
+                <td>{row.differences[3]}</td>
             </tr>
     );
 
-    console.log('DifferenceTable ->', props.data);
+    const headers = ['Section', 'Setting'];
+    props.iniSections.map(
+        (section) => {
+            headers.push(section.name);
+        }
+    );
+
+    const tableHeaders = headers.map((header, idx) =>
+        <th>{header}</th>
+    );
+
+//    console.log('DifferenceTable ->', props.data);
 
     return (
         <>
             <table className="table">
                 <thead>
-                {tableRows}
+                <tr>
+                    {tableHeaders}
+                </tr>
                 </thead>
+                <tbody>
+                {tableRows}
+                </tbody>
             </table>
         </>
 

@@ -271,23 +271,14 @@ const RootComponent = () => {
                 differenceData !== null
                     ?
                     <Row>
-                        <div><DifferenceTable data={differenceData.differences}></DifferenceTable></div>
+                        <div><DifferenceTable data={differenceData.differences}
+                                              iniSections={iniSections}></DifferenceTable></div>
                     </Row>
                     :
                     <Row>
                         <div>diff data null</div>
                     </Row>
             }
-
-            <Row className='RootComponent-Row'>
-                {
-                    iniSections.map(
-                        (section, idx) => (
-                            <Col key={idx}>{section.name}</Col>
-                        )
-                    )
-                }
-            </Row>
 
         </Container>
     );
