@@ -74,10 +74,10 @@ const RootComponent = () => {
     useEffect(() => {
         EventBus.on("compare_setups", (data) => {
 
-            console.log('Reloading cars from backend!');
+            console.log('Comparing setups!', data);
 
             SetupDataFetcher.sendCompareSetupsRequest(
-                iniSections,
+                data,
                 (response) => {
                     console.log('response', response);
                     setDifferenceData(response.data);
@@ -145,7 +145,7 @@ const RootComponent = () => {
             //          console.log("iniSections", iniSections);
             const tmp = [...iniSections];
             tmp.pop();
-            console.log("tmp", tmp);
+            console.log("minus tmp", tmp);
             setIniSections(tmp);
         }
     }
@@ -158,6 +158,7 @@ const RootComponent = () => {
         }
         const tmp = [...iniSections];
         tmp.push(section);
+        console.log("plus tmp", tmp);
         setIniSections(tmp);
     }
 
@@ -177,7 +178,7 @@ const RootComponent = () => {
         section.selected = carTrackIniSelection.selectedCar.concat(" / ").concat(carTrackIniSelection.selectedTrack).concat(" / ").concat(carTrackIniSelection.selectedSetupIni);
         console.log("section: ", section);
         setIniSections(tmp);
-        EventBus.dispatch("compare_setups");
+        EventBus.dispatch("compare_setups", iniSections);
     }
 
     return (

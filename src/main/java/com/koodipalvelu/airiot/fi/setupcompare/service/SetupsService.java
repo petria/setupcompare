@@ -283,8 +283,6 @@ public class SetupsService {
 
     public CompareSetupsResponse compareSetups(List<IniSections> iniList) throws IOException {
 
-        CompareSetupsResponse response
-                = CompareSetupsResponse.builder().compareResults("fufuf").build();
         List<CompareDifference> differenceList = new ArrayList<>();
         Map<String, String> baseValues = getSetupIniValues(iniList.get(0).getSelected());
         Map<String, String> otherValues = getSetupIniValues(iniList.get(1).getSelected());
@@ -313,7 +311,9 @@ public class SetupsService {
                 }
             }
         }
-        response.setDifferences(differenceList);
+        CompareSetupsResponse response
+                = CompareSetupsResponse.builder().differences(differenceList).build();
+
         return response;
     }
 }
