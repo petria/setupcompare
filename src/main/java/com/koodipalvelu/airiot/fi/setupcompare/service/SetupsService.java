@@ -96,6 +96,9 @@ public class SetupsService {
                 String[] split = path.split("/");
 
                 String car = split[split.length - 2];
+                if (car.contains("bmw_z4_gt3")) {
+                    int foo = 0;
+                }
                 String track = split[split.length - 1];
                 if (track.equals("generic")) {
                     // skip generic dir
@@ -174,8 +177,10 @@ public class SetupsService {
 
     public List<CarForSelection> getCarListForSelection() {
 
-        List<Car> carList = getCarList().stream().filter(car -> car.getIniFileCount() > 0).toList();
-        return carList.stream().map(this::convertToCarForSelection).collect(Collectors.toList());
+        List<Car> carList1 = getCarList();
+
+        //       List<Car> carList = getCarList().stream().filter(car -> car.getIniFileCount() > 0).toList();
+        return carList1.stream().map(this::convertToCarForSelection).collect(Collectors.toList());
     }
 
     private CarForSelection convertToCarForSelection(Car car) {
