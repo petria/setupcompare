@@ -308,7 +308,7 @@ public class SetupsService {
 
                 Set<String> configKeyStrings = reader.getConfigKeyGroups().get(groupKey);
                 for (String configKey : configKeyStrings) {
-                    boolean hasDiff = false;
+                    String hasDiff = "";
 
                     Map<String, List<String>> differenceMap = differenceMapList.get(0);
                     List<String> difference = differenceMap.get(configKey);
@@ -320,9 +320,11 @@ public class SetupsService {
                     if (difference != null) {
                         list.add(difference.get(0));
                         list.add(difference.get(1));
-                        hasDiff = true;
+
+                        hasDiff += "1";
 
                     } else {
+                        hasDiff += "0";
                         list.add("-");
                         list.add("-");
                     }
@@ -335,12 +337,13 @@ public class SetupsService {
                         difference = differenceMap.get(configKey);
                         if (difference != null) {
                             list.add(difference.get(1));
-                            hasDiff = true;
+                            hasDiff += "1";
                         } else {
+                            hasDiff += "0";
                             list.add("-");
                         }
                     }
-                    if (hasDiff) {
+                    if (hasDiff.indexOf("0") == -1) {
                         differenceList.add(CompareDifference.builder().differences(list).build());
                     }
 
