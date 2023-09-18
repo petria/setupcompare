@@ -175,8 +175,7 @@ public class SetupsService {
     public List<CarForSelection> getCarListForSelection() {
 
         List<Car> carList = getCarList().stream().filter(car -> car.getIniFileCount() > 0).toList();
-        List<CarForSelection> collect = carList.stream().map(this::convertToCarForSelection).collect(Collectors.toList());
-        return collect;
+        return carList.stream().map(this::convertToCarForSelection).collect(Collectors.toList());
     }
 
     private CarForSelection convertToCarForSelection(Car car) {
@@ -240,12 +239,10 @@ public class SetupsService {
             }
         }
 
-        SetupListForCarAndTrackResponse response = SetupListForCarAndTrackResponse
+        return SetupListForCarAndTrackResponse
                 .builder()
                 .setupList(list)
                 .build();
-
-        return response;
     }
 
 
