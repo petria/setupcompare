@@ -160,6 +160,8 @@ const RootComponent = () => {
         tmp.push(section);
         console.log("plus tmp", tmp);
         setIniSections(tmp);
+        EventBus.dispatch("compare_setups", iniSections);
+
     }
 
     const carSelectCb = (data) => {

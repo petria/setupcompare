@@ -2,13 +2,20 @@ import React from "react";
 
 const DifferenceTable = (props) => {
 
+    const getRowColumns = (row) => {
+        const cols = [];
+        row.differences.forEach(
+            (diff) => cols.push(
+                <td>{diff}</td>
+            )
+        );
+        return cols;
+    }
+
     const tableRows = props.data.map(
         (row, idx) =>
             <tr key={idx}>
-                <td>{row.differences[0]}</td>
-                <td>{row.differences[1]}</td>
-                <td>{row.differences[2]}</td>
-                <td>{row.differences[3]}</td>
+                {getRowColumns(row)}
             </tr>
     );
 

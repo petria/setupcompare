@@ -269,51 +269,85 @@ public class SetupsService {
     private Map<String, String> getSetupIniValues(String selected) throws IOException {
         String[] split = selected.split(" / ");
         if (split.length != 3) {
-            return null;
+            return new HashMap<>();
         }
         String key = String.format("%s__%s", split[0], split[1]);
 
         SetupScanResults setupScanResults = resultsMap.get(key);
         String iniBase = setupScanResults.getIniFilesMap().get(split[2]);
 
-
-        Map<String, String> baseValues = reader.parseValues(reader.readSetupFile(iniBase));
-        return baseValues;
+        return reader.parseValues(reader.readSetupFile(iniBase));
     }
 
     public CompareSetupsResponse compareSetups(List<IniSections> iniList) throws IOException {
 
         List<CompareDifference> differenceList = new ArrayList<>();
         Map<String, String> baseValues = getSetupIniValues(iniList.get(0).getSelected());
-        Map<String, String> otherValues = getSetupIniValues(iniList.get(1).getSelected());
 
-        if (baseValues != null && otherValues != null) {
-            SetupIniComparator comparator = new SetupIniComparator(configKeyMapping);
-            Map<String, List<String>> differenceMap = comparator.compare(baseValues, otherValues);
+        List<Map<String, String>> otherValuesList = new ArrayList<>();
+        for (int i = 0; i < iniList.size(); i++) {
+            if (i == 0) {
+                continue; // skip 1st which is base values
+            }
+            Map<String, String> otherValues = getSetupIniValues(iniList.get(i).getSelected());
+            otherValuesList.add(otherValues);
+        }
+
+        if (baseValues != null && !otherValuesList.isEmpty()) {
+
+            List<Map<String, List<String>>> differenceMapList = new ArrayList<>();
+            for (Map<String, String> otherValues : otherValuesList) {
+                SetupIniComparator comparator = new SetupIniComparator(configKeyMapping);
+                Map<String, List<String>> differenceMap = comparator.compare(baseValues, otherValues);
+                differenceMapList.add(differenceMap);
+            }
+
 
             Stream<String> sortedKeys = reader.getConfigKeyGroups().keySet().stream().sorted();
             for (String groupKey : sortedKeys.toList()) {
 
                 Set<String> configKeyStrings = reader.getConfigKeyGroups().get(groupKey);
                 for (String configKey : configKeyStrings) {
-                    //                   log.debug("{} - {}", groupKey, configKey);
+                    boolean hasDiff = false;
+
+                    Map<String, List<String>> differenceMap = differenceMapList.get(0);
                     List<String> difference = differenceMap.get(configKey);
+
+                    List<String> list = new ArrayList<>();
+                    list.add(groupKey);
+                    list.add(configKey);
+
                     if (difference != null) {
-                        log.debug("{} - {} - {} <-> {}", groupKey, configKey, difference.get(0), difference.get(1));
-                        List<String> list = new ArrayList<>();
-                        list.add(groupKey);
-                        list.add(configKey);
                         list.add(difference.get(0));
                         list.add(difference.get(1));
-                        CompareDifference compareDifference = CompareDifference.builder().differences(list).build();
-                        differenceList.add(compareDifference);
+                        hasDiff = true;
+
+                    } else {
+                        list.add("-");
+                        list.add("-");
                     }
+
+                    for (int i = 0; i < differenceMapList.size(); i++) {
+                        if (i == 0) {
+                            continue; // SKIP 1st already handled
+                        }
+                        differenceMap = differenceMapList.get(i);
+                        difference = differenceMap.get(configKey);
+                        if (difference != null) {
+                            list.add(difference.get(1));
+                            hasDiff = true;
+                        } else {
+                            list.add("-");
+                        }
+                    }
+                    if (hasDiff) {
+                        differenceList.add(CompareDifference.builder().differences(list).build());
+                    }
+
                 }
             }
         }
-        CompareSetupsResponse response
-                = CompareSetupsResponse.builder().differences(differenceList).build();
 
-        return response;
+        return CompareSetupsResponse.builder().differences(differenceList).build();
     }
 }
