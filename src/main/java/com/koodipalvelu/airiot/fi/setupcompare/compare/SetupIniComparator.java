@@ -17,6 +17,7 @@ public class SetupIniComparator {
     }
 
     public Map<String, List<String>> compare(Map<String, String> base, Map<String, String> other) {
+
         Map<String, List<String>> differenceMap = new HashMap<>();
         for (String key : configKeyMapping.keySet()) {
             String valueBase = base.get(key);
