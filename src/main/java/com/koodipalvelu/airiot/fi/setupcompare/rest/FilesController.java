@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/api/files")
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 public class FilesController {
 
   @Autowired
@@ -39,7 +39,7 @@ public class FilesController {
     }
   }
 
-  @GetMapping("/files")
+  @GetMapping("/list")
   public ResponseEntity<List<FileInfo>> getListFiles() {
     List<FileInfo> fileInfos = storageService.loadAll().map(path -> {
       String filename = path.getFileName().toString();
@@ -52,14 +52,14 @@ public class FilesController {
     return ResponseEntity.status(HttpStatus.OK).body(fileInfos);
   }
 
-  @GetMapping("/files/{filename:.+}")
+  @GetMapping("/{filename:.+}")
   public ResponseEntity<Resource> getFile(@PathVariable String filename) {
     Resource file = storageService.load(filename);
     return ResponseEntity.ok()
         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
   }
 
-  @DeleteMapping("/files/{filename:.+}")
+  @DeleteMapping("/{filename:.+}")
   public ResponseEntity<ResponseMessage> deleteFile(@PathVariable String filename) {
     String message = "";
     

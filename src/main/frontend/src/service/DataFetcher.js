@@ -4,7 +4,10 @@ import axios from "axios";
 const API_URL = "http://localhost:8080/api";
 
 const client = axios.create({
-    baseURL: API_URL
+    baseURL: API_URL,
+    headers: {
+        "Content-type": "application/json",
+    }
 });
 
 const getTrackListForCar = (carFolderName, ok, error) => {
@@ -80,12 +83,18 @@ const getCarListForSelection = (ok, error) => {
     );
 }
 
+const getFiles = () => {
+    return client.get("/files/list");
+};
+
+
 const DataFetcher = {
     getCarListForSelection,
     getSetupListForCarAndTrack,
     getTrackListForCar,
     scanForSetupIniFiles,
-    sendCompareSetupsRequest
+    sendCompareSetupsRequest,
+    getFiles
 }
 
 export default DataFetcher;
