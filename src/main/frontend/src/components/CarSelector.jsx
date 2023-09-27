@@ -5,7 +5,7 @@ import 'react-dropdown/style.css';
 import DropdownItem from "react-bootstrap/DropdownItem";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import SetupDataFetcher from "../service/SetupDataFetcher";
+import DataFetcher from "../service/DataFetcher";
 
 const CarSelector = (props) => {
 
@@ -58,7 +58,7 @@ const CarSelector = (props) => {
         const carSelected = (eventKey, event) => {
 
             setSelectedCar(eventKey);
-            SetupDataFetcher.getTrackListForCar(
+            DataFetcher.getTrackListForCar(
                 eventKey,
                 (response) => {
                     console.log('response', response);
@@ -74,7 +74,7 @@ const CarSelector = (props) => {
 
         const trackSelected = (eventKey, event) => {
             setSelectedTrack(eventKey);
-            SetupDataFetcher.getSetupListForCarAndTrack(
+            DataFetcher.getSetupListForCarAndTrack(
                 selectedCar,
                 eventKey,
                 (response) => {

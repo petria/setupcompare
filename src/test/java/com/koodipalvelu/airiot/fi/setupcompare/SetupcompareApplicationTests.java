@@ -27,7 +27,7 @@ class SetupcompareApplicationTests {
     @Autowired
     SetupsService service;
 
-  //  @Test
+    //  @Test
     void test_setup_ini_reader() throws IOException {
         List<String> lines = reader.readSetupFile("/Users/petria/code/github/setupcompare/ACsetups/1.47.6.ini");
         Assertions.assertNotNull(lines);
@@ -36,7 +36,7 @@ class SetupcompareApplicationTests {
         Assertions.assertNotNull(values);
     }
 
-//    @Test
+    @Test
     public void test_setups_service_read_ini_files() throws IOException {
         service.scanForSetupIniFiles(null, null);
         Map<String, Car> setupsMap = service.getSetupsMap();

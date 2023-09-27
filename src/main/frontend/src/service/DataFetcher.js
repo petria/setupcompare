@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_URL = "http://setupcompare.airiot.fi:8080/api";
+//const API_URL = "http://setupcompare.airiot.fi:8080/api";
+const API_URL = "http://localhost:8080/api";
 
 const client = axios.create({
     baseURL: API_URL
@@ -79,7 +80,7 @@ const getCarListForSelection = (ok, error) => {
     );
 }
 
-const SetupDataFetcher = {
+const DataFetcher = {
     getCarListForSelection,
     getSetupListForCarAndTrack,
     getTrackListForCar,
@@ -87,4 +88,4 @@ const SetupDataFetcher = {
     sendCompareSetupsRequest
 }
 
-export default SetupDataFetcher;
+export default DataFetcher;

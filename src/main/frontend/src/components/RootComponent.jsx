@@ -6,8 +6,9 @@ import Col from 'react-bootstrap/Col';
 import {Button} from "react-bootstrap";
 import CarSelector from "./CarSelector";
 import DifferenceTable from "./DifferenceTable";
-import SetupDataFetcher from "../service/SetupDataFetcher";
+import DataFetcher from "../service/DataFetcher";
 import EventBus from "../common/EventBus";
+import SetupUploader from "./SetupUploader";
 
 const RootComponent = () => {
 
@@ -32,6 +33,8 @@ const RootComponent = () => {
         {allSelected: false}
     );
 
+    const [showReScanButton, setShowReScanButton] = useState(false);
+
     const [differenceData, setDifferenceData] = useState(null);
 
     useEffect(() => {
@@ -41,7 +44,7 @@ const RootComponent = () => {
 
             console.log('Reloading cars from backend!');
 
-            SetupDataFetcher.getCarListForSelection(
+            DataFetcher.getCarListForSelection(
                 (response) => {
                     console.log('response', response);
                     EventBus.dispatch("notify_request", {
@@ -76,7 +79,7 @@ const RootComponent = () => {
 
             console.log('Comparing setups!', data);
 
-            SetupDataFetcher.sendCompareSetupsRequest(
+            DataFetcher.sendCompareSetupsRequest(
                 data,
                 (response) => {
                     console.log('response', response);
@@ -103,7 +106,7 @@ const RootComponent = () => {
     useEffect(() => {
         console.log("use effect SetupIniFileStats")
         EventBus.on("scan_for_setup_ini_files", (data) => {
-            SetupDataFetcher.scanForSetupIniFiles(
+            DataFetcher.scanForSetupIniFiles(
                 (response) => {
                     console.log("scan results", response);
                     setSetupIniFileStats(response.data);
@@ -186,9 +189,15 @@ const RootComponent = () => {
     return (
         <Container className='RootComponent-Container'>
 
-            <Row className='RootComponent-Reload-Row'>
-                <Col><Button onClick={handleReloadButton} variant="danger">Re-scan configs</Button></Col>
-            </Row>
+            {
+                showReScanButton === true
+                    ?
+                    <Row className='RootComponent-Reload-Row'>
+                        <Col><Button onClick={handleReloadButton} variant="danger">Re-scan configs</Button></Col>
+                    </Row>
+                    :
+                    <div></div>
+            }
 
             {
                 setupIniFileStats !== null
@@ -235,6 +244,7 @@ const RootComponent = () => {
 
                     </div>
             }
+            <SetupUploader></SetupUploader>
 
             <CarSelector carList={carList} carSelectCb={carSelectCb}></CarSelector>
 
