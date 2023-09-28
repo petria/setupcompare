@@ -170,7 +170,12 @@ public class SetupsService {
     }
 
     public List<Car> getCarList() {
-        List<Car> carList = new ArrayList<>(this.setupsMap.values());
+        List<Car> carList = new ArrayList<>();
+        for (Car car : this.setupsMap.values()) {
+            if (car.getTracksWithSetup().size() > 0) {
+                carList.add(car);
+            }
+        }
         carList.sort(Comparator.comparing(Car::getCarName));
         return carList;
     }
