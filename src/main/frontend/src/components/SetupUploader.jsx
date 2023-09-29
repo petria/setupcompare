@@ -40,6 +40,9 @@ const SetupUploader = (props) => {
 
             <FileUploader handleChange={handleChange} name="file" types={fileTypes}/>
 
+            &nbsp;
+            <br></br>
+
             <Card>
                 <CardHeader>List of uploaded Files</CardHeader>
                 <ul className="list-group list-group-flush">
