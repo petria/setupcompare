@@ -93,6 +93,11 @@ const CarSelector = (props) => {
             console.log('setupIniSelected', eventKey);
         }
 
+        function formatCarDropDown(car) {
+            const str = car.carFolderName.concat(' (').concat(car.carTracksWithSetup).concat(')');
+            return str;
+        }
+
         return (
             <Row className='CarSelector_Row'>
                 <Col>
@@ -108,7 +113,7 @@ const CarSelector = (props) => {
                                             props.carList.map(
                                                 (car) => (
                                                     <DropdownItem key={car.carFolderName}
-                                                                  eventKey={car.carFolderName}>{car.carFolderName}</DropdownItem>
+                                                                  eventKey={car.carFolderName}>{formatCarDropDown(car)}</DropdownItem>
                                                 )
                                             )
                                         }

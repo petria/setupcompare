@@ -192,7 +192,7 @@ public class SetupsService {
         CarForSelection forSelection
                 = CarForSelection.builder()
                 .id(car.getId())
-                .carIniFileCount(car.getIniFileCount())
+                .carTracksWithSetup(car.getTracksWithSetup().size())
                 .carFolderName(car.getCarFolderName())
                 .carName(car.getCarName())
                 .build();

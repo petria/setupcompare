@@ -8,7 +8,7 @@ import lombok.Data;
 public class CarForSelection {
 
     private long id;
-    private long carIniFileCount;
+    private long carTracksWithSetup;
     private String carName;
     private String carFolderName;
 
