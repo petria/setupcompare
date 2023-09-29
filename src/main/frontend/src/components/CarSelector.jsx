@@ -98,6 +98,11 @@ const CarSelector = (props) => {
             return str;
         }
 
+        function formatTrackDropDown(track) {
+            const str = track.trackFolderName.concat(' (').concat(track.iniFileCount).concat(')');
+            return str;
+        }
+
         return (
             <Row className='CarSelector_Row'>
                 <Col>
@@ -141,7 +146,7 @@ const CarSelector = (props) => {
                                             trackList.map(
                                                 (track) => (
                                                     <DropdownItem key={track.trackFolderName}
-                                                                  eventKey={track.trackFolderName}>{track.trackFolderName}</DropdownItem>
+                                                                  eventKey={track.trackFolderName}>{formatTrackDropDown(track)}</DropdownItem>
                                                 )
                                             )
                                         }

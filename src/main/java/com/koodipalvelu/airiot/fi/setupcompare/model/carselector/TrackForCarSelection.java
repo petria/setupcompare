@@ -14,4 +14,6 @@ public class TrackForCarSelection {
 
     private String trackFolderName;
 
+    private int iniFileCount;
+
 }

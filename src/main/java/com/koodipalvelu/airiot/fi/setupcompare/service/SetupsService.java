@@ -215,11 +215,13 @@ public class SetupsService {
             Stream<String> sorted = car.getTracksWithSetup().keySet().stream().sorted();
             for (String trackName : sorted.toList()) {
                 Track track = car.getTracksWithSetup().get(trackName);
+
                 TrackForCarSelection forCarSelection
                         = TrackForCarSelection.builder()
                         .id(track.getId())
                         .trackFolderName(track.getTrackFolderName())
                         .trackName(track.getTrackName())
+                        .iniFileCount(track.getIniFilesMap().size())
                         .build();
                 list.add(forCarSelection);
             }
