@@ -3,12 +3,13 @@ import Container from 'react-bootstrap/Container';
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import {Button} from "react-bootstrap";
+import {Button, Card} from "react-bootstrap";
 import CarSelector from "./CarSelector";
 import DifferenceTable from "./DifferenceTable";
 import DataFetcher from "../service/DataFetcher";
 import EventBus from "../common/EventBus";
 import SetupUploader from "./SetupUploader";
+import CardHeader from "react-bootstrap/CardHeader";
 
 const RootComponent = () => {
 
@@ -202,7 +203,8 @@ const RootComponent = () => {
             {
                 setupIniFileStats !== null
                     ?
-                    <div className='RootComponent-Reload-Row'>
+                    <Card>
+                        <CardHeader>Server info</CardHeader>
                         <Row>
                             <Col>scanDir</Col>
                             <Col>{setupIniFileStats.scanDir}</Col>
@@ -223,7 +225,7 @@ const RootComponent = () => {
                             <Col>uniqueSetupFiles</Col>
                             <Col>{setupIniFileStats.uniqueSetupFiles}</Col>
                         </Row>
-                    </div>
+                    </Card>
                     :
                     <div>
                         <Row>
@@ -244,54 +246,69 @@ const RootComponent = () => {
 
                     </div>
             }
+
+            <br></br>
+
             <SetupUploader></SetupUploader>
 
-            <CarSelector carList={carList} carSelectCb={carSelectCb}></CarSelector>
+            <br></br>
 
-            {
-                carTrackIniSelection !== null
-                    ?
-                    <Row className='RootComponent-Selection-Row'>
-                        <Col>Selection:</Col>
-                        <Col>{carTrackIniSelection.selectedCar}</Col>
-                        <Col>{carTrackIniSelection.selectedTrack}</Col>
-                        <Col>{carTrackIniSelection.selectedSetupIni}</Col>
-                    </Row>
-                    :
-                    <></>
-            }
+            <Card>
+                <CardHeader>Select setup</CardHeader>
 
-            <Row>
-                <Col><Button onClick={(e) => handleButtonMinus(e)}
-                             className='RootComponent-ButtonMinus'>-</Button>
-                    <Button onClick={handleButtonPlus}>+</Button>
-                </Col>
-            </Row>
-            {
-                iniSections.map(
-                    (section, idx) => (
-                        <Row key={idx}>
-                            <Col><Button disabled={!carTrackIniSelection.allSelected} variant="primary"
-                                         onClick={(e) => handleButtonSet(e, section.name)}>SET</Button> {section.name}
-                            </Col>
-                            <Col>{section.selected}</Col>
+                <CarSelector carList={carList} carSelectCb={carSelectCb}></CarSelector>
+
+                {
+                    carTrackIniSelection !== null
+                        ?
+                        <Row className='RootComponent-Selection-Row'>
+                            <Col>Selection:</Col>
+                            <Col>{carTrackIniSelection.selectedCar}</Col>
+                            <Col>{carTrackIniSelection.selectedTrack}</Col>
+                            <Col>{carTrackIniSelection.selectedSetupIni}</Col>
                         </Row>
-                    )
-                )
-            }
+                        :
+                        <></>
+                }
+            </Card>
 
-            {
-                differenceData !== null
-                    ?
-                    <Row>
-                        <div><DifferenceTable data={differenceData.differences}
-                                              iniSections={iniSections}></DifferenceTable></div>
-                    </Row>
-                    :
-                    <Row>
-                        <div>diff data null</div>
-                    </Row>
-            }
+            <br></br>
+
+            <Card>
+                <CardHeader>Setup differences</CardHeader>
+
+                <Row>
+                    <Col><Button onClick={(e) => handleButtonMinus(e)}
+                                 className='RootComponent-ButtonMinus'>-</Button>
+                        <Button onClick={handleButtonPlus}>+</Button>
+                    </Col>
+                </Row>
+                {
+                    iniSections.map(
+                        (section, idx) => (
+                            <Row key={idx}>
+                                <Col><Button disabled={!carTrackIniSelection.allSelected} variant="primary"
+                                             onClick={(e) => handleButtonSet(e, section.name)}>SET</Button> {section.name}
+                                </Col>
+                                <Col>{section.selected}</Col>
+                            </Row>
+                        )
+                    )
+                }
+
+                {
+                    differenceData !== null
+                        ?
+                        <Row>
+                            <div><DifferenceTable data={differenceData.differences}
+                                                  iniSections={iniSections}></DifferenceTable></div>
+                        </Row>
+                        :
+                        <Row>
+                            <div>diff data null</div>
+                        </Row>
+                }
+            </Card>
 
         </Container>
     );

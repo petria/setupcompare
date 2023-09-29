@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {FileUploader} from "react-drag-drop-files";
-import Container from "react-bootstrap/Container";
 import DataFetcher from "../service/DataFetcher";
 import EventBus from "../common/EventBus";
+import {Card} from "react-bootstrap";
+import CardHeader from "react-bootstrap/CardHeader";
 
 
 const SetupUploader = (props) => {
@@ -34,12 +35,13 @@ const SetupUploader = (props) => {
     };
 
     return (
-        <Container>
-            Setup Uploader
+        <Card>
+            <CardHeader>Setup Uploader</CardHeader>
+
             <FileUploader handleChange={handleChange} name="file" types={fileTypes}/>
 
-            <div className="card">
-                <div className="card-header">List of Files</div>
+            <Card>
+                <CardHeader>List of uploaded Files</CardHeader>
                 <ul className="list-group list-group-flush">
                     {fileInfos &&
                         fileInfos.map((file, index) => (
@@ -48,9 +50,10 @@ const SetupUploader = (props) => {
                             </li>
                         ))}
                 </ul>
-            </div>
+            </Card>
+        </Card>
 
-        </Container>
+
     );
 }
 
