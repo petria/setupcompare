@@ -94,13 +94,11 @@ const CarSelector = (props) => {
         }
 
         function formatCarDropDown(car) {
-            const str = car.carFolderName.concat(' (').concat(car.carTracksWithSetup).concat(')');
-            return str;
+            return car.carFolderName.concat(' (').concat(car.carTracksWithSetup).concat(')');
         }
 
         function formatTrackDropDown(track) {
-            const str = track.trackFolderName.concat(' (').concat(track.iniFileCount).concat(')');
-            return str;
+            return track.trackFolderName.concat(' (').concat(track.iniFileCount).concat(')');
         }
 
         return (
